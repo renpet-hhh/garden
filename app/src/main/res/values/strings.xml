@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Garden</string>
+    <string name="minhas_plantas_title">Minhas plantas</string>
+    <string name="plant_item_popname">Nome popular: %1$s</string>
+    <string name="plant_item_sciname">Nome científico: %1$s</string>
+    <string name="plant_item_description">Descrição: %1$s</string>
+    <string name="plant_item_localization">Localização: %1$s</string>
+    <string name="minhas_plantas_scroll">Lista de plantas</string>
 </resources>
