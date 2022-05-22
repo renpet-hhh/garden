@@ -1,5 +1,8 @@
 package ufc.erv.garden.data
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Plant(
     val id: String,
     var popularName: String,
