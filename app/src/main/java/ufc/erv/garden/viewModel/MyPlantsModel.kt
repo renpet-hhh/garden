@@ -1,4 +1,4 @@
-package ufc.erv.garden.viewmodel
+package ufc.erv.garden.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,9 +30,13 @@ class MyPlantsModel : ViewModel() {
     private val vTAG = "MyPlantsModel" /* Logger TAG */
 
     private val username = "mock-user"
-    val server : MutableStateFlow<String> by lazy { MutableStateFlow<String>("") }
-    private val _plants : MutableStateFlow<List<Plant>> by lazy { MutableStateFlow<List<Plant>>(listOf()) }
+    val server : MutableStateFlow<String> by lazy { MutableStateFlow("") }
+    private val _plants : MutableStateFlow<List<Plant>> by lazy { MutableStateFlow(listOf()) }
     val plants : StateFlow<List<Plant>> by this::_plants
+
+    fun resetPlants() {
+        _plants.value = listOf()
+    }
 
     fun httpGetPlants() {
         viewModelScope.launch {
@@ -43,7 +47,7 @@ class MyPlantsModel : ViewModel() {
                 get(server.value + "/u/${username}/plants")
             }
             if (response.isFailure) {
-                server.value = ""
+                resetPlants()
                 return@launch
             }
             val body = response.getOrThrow().bodyAsText()

@@ -1,69 +1,61 @@
 package ufc.erv.garden
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import ufc.erv.garden.data.Plant
-import ufc.erv.garden.viewmodel.MyPlantsModel
+import ufc.erv.garden.databinding.ActivityMainBinding
+import ufc.erv.garden.util.onTextFinished
+import ufc.erv.garden.viewModel.MyPlantsModel
 import ufc.erv.garden.views.PlantItem
-
-
-
-
 
 
 class MainActivity : AppCompatActivity() {
     private val vTAG = "MainActivity" /* Logger TAG */
+    private lateinit var binding: ActivityMainBinding
 
-    private val model: MyPlantsModel by viewModels()
-    private val myPlantsList by lazy { findViewById<LinearLayout>(R.id.myPlantsList) }
+
+    private val viewModel: MyPlantsModel by viewModels()
 
     private fun refreshMyPlants(plants: List<Plant>) {
-        myPlantsList.removeAllViews()
-        plants.forEach { myPlantsList.addView(PlantItem(this.baseContext, null, it)) }
-    }
-
-    private fun askServer() {
-        Log.d(vTAG, "askServer")
-        val input = EditText(this@MainActivity)
-        AlertDialog.Builder(this@MainActivity)
-            .setTitle("Conectar ao servidor")
-            .setMessage("Insira o endereço do servidor")
-            .setView(input)
-            .setPositiveButton("OK") { _, _ ->
-                model.server.value = input.text.toString()
-            }
-            .show()
+        binding.myPlantsList.removeAllViews()
+        plants.forEach { binding.myPlantsList.addView(PlantItem(this.baseContext, null, it)) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.viewModel = viewModel
+
+        supportActionBar?.hide()
+
+        /* Listeners */
+        binding.serverEdit.onTextFinished {
+            viewModel.server.value = it
+        }
+        /* Collectors */
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    model.server.collect {
+                    viewModel.server.collect {
                         if (it == "mock") {
-                            model.setMockPlants()
+                            viewModel.setMockPlants()
                             return@collect
                         }
                         if (it == "") {
-                            askServer()
+                            viewModel.resetPlants()
                             return@collect
                         }
-                        model.httpGetPlants()
+                        viewModel.httpGetPlants()
                     }
                 }
                 launch {
-                    model.plants.collect {
+                    viewModel.plants.collect {
                         refreshMyPlants(it)
                     }
                 }

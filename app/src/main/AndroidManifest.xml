@@ -13,10 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Garden"
         tools:targetApi="31"
-        android:networkSecurityConfig="@xml/network_security">
+        android:networkSecurityConfig="@xml/network_security"
+        android:hardwareAccelerated="true">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
