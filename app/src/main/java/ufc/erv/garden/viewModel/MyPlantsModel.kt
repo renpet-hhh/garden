@@ -29,6 +29,15 @@ val mockPlants: List<Plant> = listOf(
 class MyPlantsModel : ViewModel() {
     private val vTAG = "MyPlantsModel" /* Logger TAG */
 
+    private object ERROR {
+        const val SERVER_CONNECT = "Conexão ao servidor falhou"
+        const val DECODE_RESPONSE = "Erro interno do servidor"
+    }
+
+
+    private val _error : MutableStateFlow<String> by lazy { MutableStateFlow("")}
+    val error : StateFlow<String> by this::_error
+
     private val username = "mock-user"
     val server : MutableStateFlow<String> by lazy { MutableStateFlow("") }
     private val _plants : MutableStateFlow<List<Plant>> by lazy { MutableStateFlow(listOf()) }
@@ -48,19 +57,26 @@ class MyPlantsModel : ViewModel() {
             }
             if (response.isFailure) {
                 resetPlants()
+                _error.value = ERROR.SERVER_CONNECT
                 return@launch
             }
             val body = response.getOrThrow().bodyAsText()
             if (body == "") return@launch
             val decoded = Json.runCatching { decodeFromString<List<Plant>>(body) }
             if (decoded.isFailure) {
+                _error.value = ERROR.DECODE_RESPONSE
                 return@launch
             }
+            clearError()
             _plants.value = decoded.getOrThrow()
         }
     }
     fun setMockPlants() {
         _plants.value = mockPlants
+    }
+
+    fun clearError() {
+        _error.value = ""
     }
 
 }

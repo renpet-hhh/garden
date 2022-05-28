@@ -1,8 +1,10 @@
 package ufc.erv.garden
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -10,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import ufc.erv.garden.data.Plant
 import ufc.erv.garden.databinding.ActivityMainBinding
-import ufc.erv.garden.util.onTextFinished
 import ufc.erv.garden.viewModel.MyPlantsModel
 import ufc.erv.garden.views.PlantItem
 
@@ -22,9 +23,21 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MyPlantsModel by viewModels()
 
-    private fun refreshMyPlants(plants: List<Plant>) {
+    private fun updateMyPlants(plants: List<Plant>) {
         binding.myPlantsList.removeAllViews()
         plants.forEach { binding.myPlantsList.addView(PlantItem(this.baseContext, null, it)) }
+    }
+
+    private fun tryRefresh(server: String) {
+        if (server == "mock") {
+            viewModel.setMockPlants()
+            return
+        }
+        if (server == "") {
+            viewModel.resetPlants()
+            return
+        }
+        viewModel.httpGetPlants()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,28 +48,33 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         /* Listeners */
-        binding.serverEdit.onTextFinished {
-            viewModel.server.value = it
+        binding.serverInput.setEndIconOnClickListener {
+            viewModel.server.value = binding.serverEdit.text.toString()
         }
+
+        binding.serverEdit.addTextChangedListener {
+            viewModel.clearError()
+        }
+
         /* Collectors */
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.server.collect {
-                        if (it == "mock") {
-                            viewModel.setMockPlants()
-                            return@collect
-                        }
-                        if (it == "") {
-                            viewModel.resetPlants()
-                            return@collect
-                        }
-                        viewModel.httpGetPlants()
+                        tryRefresh(it)
                     }
                 }
                 launch {
                     viewModel.plants.collect {
-                        refreshMyPlants(it)
+                        updateMyPlants(it)
+                    }
+                }
+                launch {
+                    viewModel.error.collect {
+                        Log.d(vTAG, "collect error")
+                        /* Material3 não fornece o atributo de texto do erro
+                        no XML, então temos que fazer isso manualmente */
+                        binding.serverInput.error = it.ifEmpty { null }
                     }
                 }
             }

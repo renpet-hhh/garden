@@ -7,4 +7,5 @@
     <string name="plant_item_localization">Localização: %1$s</string>
     <string name="minhas_plantas_scroll">Lista de plantas</string>
     <string name="server">Servidor</string>
+    <string name="commit">Confirmar</string>
 </resources>

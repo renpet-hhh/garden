@@ -24,24 +24,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/serverEdit"
-            android:layout_width="211dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:autofillHints="name"
-            android:backgroundTint="#4CAF50"
-            android:ems="10"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/serverInput"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:hint="@string/server"
-            android:inputType="textNoSuggestions"
-            android:text="@{viewModel.server}"
-            android:textColorHint="#7C8F7D"
+
+            app:endIconDrawable="@drawable/ic_baseline_done_24"
+            app:endIconMode="custom"
+            app:endIconContentDescription="@string/commit"
+            app:errorEnabled="true"
+
             app:layout_constraintBottom_toTopOf="@+id/scrollView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/myPlantsTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/myPlantsTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/serverEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.server}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ScrollView
             android:id="@+id/scrollView2"
