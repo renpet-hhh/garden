@@ -11,6 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Rule
+import ufc.erv.garden.activity.MyPlantsActivity
 import ufc.erv.garden.data.Plant
 
 /**
@@ -26,7 +27,7 @@ class PlantItemTest {
      * and close it after each test.
      */
     @get:Rule
-    var activityScenarioRule = activityScenarioRule<MainActivity>()
+    var activityScenarioRule = activityScenarioRule<MyPlantsActivity>()
 
     @Test
     fun showsCorrectMockText() {

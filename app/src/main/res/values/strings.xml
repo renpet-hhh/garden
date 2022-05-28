@@ -8,4 +8,8 @@
     <string name="minhas_plantas_scroll">Lista de plantas</string>
     <string name="server">Servidor</string>
     <string name="commit">Confirmar</string>
+    <string name="username">Nome de usuário</string>
+    <string name="enter_account">Entre em sua conta</string>
+    <string name="password">Senha</string>
+    <string name="login">Entrar</string>
 </resources>

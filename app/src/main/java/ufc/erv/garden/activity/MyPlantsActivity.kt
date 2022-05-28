@@ -1,4 +1,4 @@
-package ufc.erv.garden
+package ufc.erv.garden.activity
 
 import android.os.Bundle
 import android.util.Log
@@ -10,15 +10,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
+import ufc.erv.garden.R
 import ufc.erv.garden.data.Plant
-import ufc.erv.garden.databinding.ActivityMainBinding
+import ufc.erv.garden.databinding.MyPlantsBinding
 import ufc.erv.garden.viewModel.MyPlantsModel
 import ufc.erv.garden.views.PlantItem
 
 
-class MainActivity : AppCompatActivity() {
+class MyPlantsActivity : AppCompatActivity() {
     private val vTAG = "MainActivity" /* Logger TAG */
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: MyPlantsBinding
 
 
     private val viewModel: MyPlantsModel by viewModels()
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.my_plants)
         binding.viewModel = viewModel
 
         supportActionBar?.hide()
