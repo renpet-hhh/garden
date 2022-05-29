@@ -12,4 +12,7 @@
     <string name="enter_account">Entre em sua conta</string>
     <string name="password">Senha</string>
     <string name="login">Entrar</string>
+    <string name="plant_item_image_description">Imagem da planta</string>
+    <string name="sci_name_label">Nome científico:</string>
+    <string name="pop_name_label">Nome popular:</string>
 </resources>

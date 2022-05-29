@@ -2,9 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="ufc.erv.garden.viewModel.MyPlantsModel" />
+        <variable
+            name="plantModel"
+            type="ufc.erv.garden.viewModel.SelectedPlantModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,15 +34,13 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:hint="@string/server"
 
+            app:endIconContentDescription="@string/commit"
             app:endIconDrawable="@drawable/ic_baseline_done_24"
             app:endIconMode="custom"
-            app:endIconContentDescription="@string/commit"
             app:errorEnabled="true"
 
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,27 +50,45 @@
                 android:id="@+id/serverEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.server}" />
+                android:text="@{viewModel.server}"
+                tools:text="mock" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ScrollView
-            android:id="@+id/scrollView2"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/myPlantsList"
             android:layout_width="0dp"
-            android:layout_height="507dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
-            android:contentDescription="@string/minhas_plantas_scroll"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/item_border"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/frag_container_plant_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/serverInput"
+            app:listData="@{viewModel.plants}"
+            tools:itemCount="10"
+            tools:listitem="@layout/plant_item" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/frag_container_plant_info"
+            android:name="ufc.erv.garden.fragment.PlantInfoFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/item_border"
+            android:visibility="@{plantModel.plant == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <LinearLayout
-                android:id="@+id/myPlantsList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/myPlantsList"
+            tools:layout="@layout/plant_info_frag" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

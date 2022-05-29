@@ -11,10 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import ufc.erv.garden.R
+import ufc.erv.garden.adapter.PlantListAdapter
 import ufc.erv.garden.data.Plant
 import ufc.erv.garden.databinding.MyPlantsBinding
 import ufc.erv.garden.viewModel.MyPlantsModel
-import ufc.erv.garden.views.PlantItem
+import ufc.erv.garden.viewModel.SelectedPlantModel
 
 
 class MyPlantsActivity : AppCompatActivity() {
@@ -23,13 +24,10 @@ class MyPlantsActivity : AppCompatActivity() {
 
 
     private val viewModel: MyPlantsModel by viewModels()
-
-    private fun updateMyPlants(plants: List<Plant>) {
-        binding.myPlantsList.removeAllViews()
-        plants.forEach { binding.myPlantsList.addView(PlantItem(this.baseContext, null, it)) }
-    }
+    private val selectedPlantModel: SelectedPlantModel by viewModels()
 
     private fun tryRefresh(server: String) {
+        selectedPlantModel.plant.value = null // deselect
         if (server == "mock") {
             viewModel.setMockPlants()
             return
@@ -41,10 +39,20 @@ class MyPlantsActivity : AppCompatActivity() {
         viewModel.httpGetPlants()
     }
 
+    private fun onPlantItemClick(plant: Plant) {
+        Log.d(vTAG, "onPlantItemClick: $plant")
+        selectedPlantModel.plant.value = plant
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.my_plants)
         binding.viewModel = viewModel
+        binding.plantModel = selectedPlantModel
+        binding.myPlantsList.adapter = PlantListAdapter {
+            _, plant -> onPlantItemClick(plant)
+        }
+        binding.lifecycleOwner = this
 
         supportActionBar?.hide()
 
@@ -63,11 +71,6 @@ class MyPlantsActivity : AppCompatActivity() {
                 launch {
                     viewModel.server.collect {
                         tryRefresh(it)
-                    }
-                }
-                launch {
-                    viewModel.plants.collect {
-                        updateMyPlants(it)
                     }
                 }
                 launch {
