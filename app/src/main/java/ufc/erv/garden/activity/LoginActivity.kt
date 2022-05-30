@@ -42,13 +42,6 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.error.collect {
-                        /* Material3 não fornece o atributo de texto do erro
-                        no XML, então temos que fazer isso manualmente */
-                        binding.usernameInput.error = it.ifEmpty { null }
-                    }
-                }
-                launch {
                     viewModel.authenticated.collect {
                         if (!it) return@collect
                         val intent = Intent(this@LoginActivity.baseContext, MyPlantsActivity::class.java).apply {

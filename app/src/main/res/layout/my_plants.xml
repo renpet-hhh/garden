@@ -39,6 +39,7 @@
             app:endIconContentDescription="@string/commit"
             app:endIconDrawable="@drawable/ic_baseline_done_24"
             app:endIconMode="custom"
+            app:errorText="@{viewModel.error}"
             app:errorEnabled="true"
 
             app:layout_constraintEnd_toEndOf="parent"

@@ -73,14 +73,6 @@ class MyPlantsActivity : AppCompatActivity() {
                         tryRefresh(it)
                     }
                 }
-                launch {
-                    viewModel.error.collect {
-                        Log.d(vTAG, "collect error")
-                        /* Material3 não fornece o atributo de texto do erro
-                        no XML, então temos que fazer isso manualmente */
-                        binding.serverInput.error = it.ifEmpty { null }
-                    }
-                }
             }
         }
 

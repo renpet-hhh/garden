@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.google.android.material.textfield.TextInputLayout
 import ufc.erv.garden.adapter.PlantListAdapter
 import ufc.erv.garden.data.Plant
 
@@ -25,4 +26,9 @@ fun bindImageUrl(imgView: ImageView, imgUrl: String?) {
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
         imgView.load(imgUri)
     }
+}
+
+@BindingAdapter("errorText")
+fun bindError(textInputLayout: TextInputLayout, error: String) {
+    textInputLayout.error = error.ifEmpty { null }
 }
