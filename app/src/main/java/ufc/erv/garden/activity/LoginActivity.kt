@@ -29,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.login)
         binding.viewModel = viewModel
+        binding.lifecycleOwner = this
 
         /* Listeners */
         val editableFields: List<TextInputEditText> = listOf(binding.usernameEdit, binding.passwordEdit)
