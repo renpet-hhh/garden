@@ -3,7 +3,9 @@ package ufc.erv.garden.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -19,8 +21,8 @@ class LoginModel : ViewModel() {
     private val _error : MutableStateFlow<String> by lazy { MutableStateFlow("") }
     val error : StateFlow<String> by this::_error
 
-    private val _authenticated : MutableStateFlow<Boolean> by lazy { MutableStateFlow(false) }
-    val authenticated : StateFlow<Boolean> by this::_authenticated
+    private val _authenticated : MutableSharedFlow<Boolean> by lazy { MutableSharedFlow(0, 0) }
+    val authenticated : SharedFlow<Boolean> by this::_authenticated
 
     val username : MutableStateFlow<String> by lazy { MutableStateFlow("") }
     val password : MutableStateFlow<String> by lazy { MutableStateFlow("") }
@@ -36,7 +38,7 @@ class LoginModel : ViewModel() {
             /* Atualiza o erro conforme a validação é feita.
             * Quando não for simplesmente um MOCK, os outros erros serão usados */
             if (!valid) _error.value = ERROR.NOT_AUTHORIZED
-            _authenticated.value = valid
+            _authenticated.emit(valid)
         }
     }
 

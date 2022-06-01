@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
                 launch {
                     viewModel.authenticated.collect {
                         if (!it) return@collect
-                        val intent = Intent(this@LoginActivity.baseContext, MyPlantsActivity::class.java).apply {
+                        val intent = Intent(this@LoginActivity.baseContext, RegisterPlantActivity::class.java).apply {
                             putExtra(EXTRA.USERNAME, viewModel.username.value)
                         }
                         startActivity(intent)
