@@ -13,6 +13,12 @@
     <string name="password">Senha</string>
     <string name="login">Entrar</string>
     <string name="plant_item_image_description">Imagem da planta</string>
-    <string name="sci_name_label">Nome científico:</string>
+    <string name="pop_name">Nome popular</string>
+    <string name="sci_name">Nome científico</string>
+    <string name="description">Descrição</string>
+    <string name="localization">Localização</string>
     <string name="pop_name_label">Nome popular:</string>
+    <string name="sci_name_label">Nome científico:</string>
+    <string name="register_plant">Cadastro de planta</string>
+    <string name="register">Cadastrar</string>
 </resources>
