@@ -1,9 +1,11 @@
 package ufc.erv.garden.viewModel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ufc.erv.garden.R
 import ufc.erv.garden.data.Plant
 
 class RegisterPlantModel : ViewModel() {
@@ -14,6 +16,7 @@ class RegisterPlantModel : ViewModel() {
         const val DECODE_RESPONSE = "Erro interno do servidor"
         const val NOT_AUTHORIZED = "Nome de usuário e/ou senha incorreto"
         const val MISSING_POP_NAME = "Nome popular é campo obrigatório"
+        const val MISSING_IMAGE = "Selecione uma foto"
     }
 
     /* Descrição textual do erro */
@@ -30,6 +33,14 @@ class RegisterPlantModel : ViewModel() {
     val localText : MutableStateFlow<String> by lazy { MutableStateFlow("") }
     val descText : MutableStateFlow<String> by lazy { MutableStateFlow("") }
 
+    private val defaultURI = Uri.parse("android.resource://ufc.erv.garden/" + R.drawable.plant)
+    private val _photoURI = MutableStateFlow(defaultURI)
+    val photoURI = _photoURI.asStateFlow()
+
+    fun setPhotoURI(uri: Uri?) {
+        _photoURI.value = uri ?: defaultURI
+    }
+
 
     private suspend fun validateInput(): Boolean {
         val obligatoryFields = listOf(popText)
@@ -38,6 +49,10 @@ class RegisterPlantModel : ViewModel() {
                 _error.emit(ERROR.MISSING_POP_NAME)
                 return false
             }
+        }
+        if (photoURI.value == defaultURI) {
+            _error.emit(ERROR.MISSING_IMAGE)
+            return false
         }
         return true
     }
@@ -59,6 +74,7 @@ class RegisterPlantModel : ViewModel() {
         val texts = listOf(popText, sciText, localText, descText)
         texts.forEach { it.emit("") }
         _plant.emit(null)
+        _photoURI.emit(defaultURI)
     }
 
 

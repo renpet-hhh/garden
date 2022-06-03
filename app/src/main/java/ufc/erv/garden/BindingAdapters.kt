@@ -1,6 +1,6 @@
 package ufc.erv.garden
 
-import android.util.Log
+import android.net.Uri
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
@@ -24,6 +24,13 @@ fun bindImageUrl(imgView: ImageView, imgUrl: String?) {
             return@let
         }
         val imgUri = imgUrl.toUri().buildUpon().scheme("https").build()
+        imgView.load(imgUri)
+    }
+}
+
+@BindingAdapter("imageUri")
+fun bindImageUri(imgView: ImageView, imgUri: Uri?) {
+    imgUri?.let {
         imgView.load(imgUri)
     }
 }

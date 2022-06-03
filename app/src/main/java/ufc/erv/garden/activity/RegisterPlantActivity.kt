@@ -1,8 +1,10 @@
 package ufc.erv.garden.activity
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -21,6 +23,10 @@ class RegisterPlantActivity : AppCompatActivity() {
     private lateinit var binding: RegisterPlantBinding
     private val viewModel: RegisterPlantModel by viewModels()
 
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        viewModel.setPhotoURI(uri)
+    }
+
     private object MESSAGE {
         const val SUCCESSFUL_REGISTER = "Planta cadastrada com sucesso [MOCK]"
     }
@@ -37,6 +43,10 @@ class RegisterPlantActivity : AppCompatActivity() {
             it.addTextChangedListener {
                 viewModel.clearError()
             }
+        }
+        binding.sendPhoto.setOnClickListener {
+            viewModel.clearError()
+            getContent.launch("image/*")
         }
 
         lifecycleScope.launch {

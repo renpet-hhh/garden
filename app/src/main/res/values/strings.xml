@@ -21,4 +21,6 @@
     <string name="sci_name_label">Nome científico:</string>
     <string name="register_plant">Cadastro de planta</string>
     <string name="register">Cadastrar</string>
+    <string name="select_photo">Selecionar foto</string>
+    <string name="image_to_be_registered">Imagem da planta a ser cadastrada</string>
 </resources>
