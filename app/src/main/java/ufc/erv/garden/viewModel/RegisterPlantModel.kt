@@ -28,10 +28,10 @@ class RegisterPlantModel : ViewModel() {
     val plant = _plant.asSharedFlow()
 
     /* Conteúdo dos campos de texto editáveis */
-    val popText : MutableStateFlow<String> by lazy { MutableStateFlow("") }
-    val sciText : MutableStateFlow<String> by lazy { MutableStateFlow("") }
-    val localText : MutableStateFlow<String> by lazy { MutableStateFlow("") }
-    val descText : MutableStateFlow<String> by lazy { MutableStateFlow("") }
+    val popText : MutableStateFlow<String> = MutableStateFlow("")
+    val sciText : MutableStateFlow<String> = MutableStateFlow("")
+    val localText : MutableStateFlow<String> = MutableStateFlow("")
+    val descText : MutableStateFlow<String> = MutableStateFlow("")
 
     private val defaultURI = Uri.parse("android.resource://ufc.erv.garden/" + R.drawable.plant)
     private val _photoURI = MutableStateFlow(defaultURI)

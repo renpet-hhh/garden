@@ -35,12 +35,12 @@ class MyPlantsModel : ViewModel() {
     }
 
 
-    private val _error : MutableStateFlow<String> by lazy { MutableStateFlow("")}
+    private val _error : MutableStateFlow<String> = MutableStateFlow("")
     val error : StateFlow<String> by this::_error
 
     private val username = "mock-user"
-    val server : MutableStateFlow<String> by lazy { MutableStateFlow("") }
-    private val _plants : MutableStateFlow<List<Plant>> by lazy { MutableStateFlow(listOf()) }
+    val server : MutableStateFlow<String> = MutableStateFlow("")
+    private val _plants : MutableStateFlow<List<Plant>> = MutableStateFlow(listOf())
     val plants : StateFlow<List<Plant>> by this::_plants
 
     fun resetPlants() {

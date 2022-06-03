@@ -38,12 +38,6 @@ class RegisterPlantActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         /* Listeners */
-        val editableFields: List<TextInputEditText> = listOf(binding.popEdit, binding.sciEdit, binding.localEdit, binding.descEdit)
-        editableFields.forEach {
-            it.addTextChangedListener {
-                viewModel.clearError()
-            }
-        }
         binding.sendPhoto.setOnClickListener {
             viewModel.clearError()
             getContent.launch("image/*")

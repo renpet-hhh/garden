@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -59,10 +58,6 @@ class MyPlantsActivity : AppCompatActivity() {
         /* Listeners */
         binding.serverInput.setEndIconOnClickListener {
             viewModel.server.value = binding.serverEdit.text.toString()
-        }
-
-        binding.serverEdit.addTextChangedListener {
-            viewModel.clearError()
         }
 
         /* Collectors */

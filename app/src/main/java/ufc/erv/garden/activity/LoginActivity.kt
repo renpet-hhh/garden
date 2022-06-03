@@ -31,14 +31,6 @@ class LoginActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        /* Listeners */
-        val editableFields: List<TextInputEditText> = listOf(binding.usernameEdit, binding.passwordEdit)
-        editableFields.forEach {
-            it.addTextChangedListener {
-                viewModel.clearError()
-            }
-        }
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {

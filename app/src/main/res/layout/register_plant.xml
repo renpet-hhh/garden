@@ -63,6 +63,7 @@
                 android:nextFocusDown="@id/sciEdit"
                 android:singleLine="true"
                 android:text="@={viewModel.popText}"
+                android:afterTextChanged="@{() -> viewModel.clearError()}"
                 tools:layout_editor_absoluteX="103dp"
                 tools:layout_editor_absoluteY="93dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -89,6 +90,7 @@
                 android:nextFocusDown="@id/localEdit"
                 android:singleLine="true"
                 android:text="@={viewModel.sciText}"
+                android:afterTextChanged="@{() -> viewModel.clearError()}"
                 tools:layout_editor_absoluteX="103dp"
                 tools:layout_editor_absoluteY="93dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -115,6 +117,7 @@
                 android:nextFocusDown="@id/descEdit"
                 android:singleLine="true"
                 android:text="@={viewModel.localText}"
+                android:afterTextChanged="@{() -> viewModel.clearError()}"
                 tools:layout_editor_absoluteX="103dp"
                 tools:layout_editor_absoluteY="93dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -141,6 +144,7 @@
                 android:nextFocusDown="@id/registerButton"
                 android:singleLine="false"
                 android:text="@={viewModel.descText}"
+                android:afterTextChanged="@{() -> viewModel.clearError()}"
                 tools:layout_editor_absoluteX="103dp"
                 tools:layout_editor_absoluteY="93dp"/>
         </com.google.android.material.textfield.TextInputLayout>

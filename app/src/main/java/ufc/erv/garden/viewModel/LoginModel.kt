@@ -18,14 +18,14 @@ class LoginModel : ViewModel() {
         const val NOT_AUTHORIZED = "Nome de usuário e/ou senha incorreto"
     }
 
-    private val _error : MutableStateFlow<String> by lazy { MutableStateFlow("") }
+    private val _error : MutableStateFlow<String> = MutableStateFlow("")
     val error : StateFlow<String> by this::_error
 
-    private val _authenticated : MutableSharedFlow<Boolean> by lazy { MutableSharedFlow(0, 0) }
+    private val _authenticated : MutableSharedFlow<Boolean> = MutableSharedFlow(0, 0)
     val authenticated : SharedFlow<Boolean> by this::_authenticated
 
-    val username : MutableStateFlow<String> by lazy { MutableStateFlow("") }
-    val password : MutableStateFlow<String> by lazy { MutableStateFlow("") }
+    val username : MutableStateFlow<String> = MutableStateFlow("")
+    val password : MutableStateFlow<String> = MutableStateFlow("")
 
     private val _username = "mock-user"
     private val _password = "123456"
