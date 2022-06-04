@@ -36,6 +36,12 @@ class LoginActivity : AppCompatActivity() {
                 launch {
                     viewModel.authenticated.collect {
                         if (!it) return@collect
+
+                        val auth = applicationContext.getSharedPreferences("SESSION_AUTH", 0).edit()
+                        auth.putString("username", if (viewModel.username.value == "mock") "mock-user" else viewModel.username.value)
+                        auth.putString("password", viewModel.password.value)
+                        auth.apply()
+
                         val intent = Intent(this@LoginActivity.baseContext, RegisterPlantActivity::class.java).apply {
                             putExtra(EXTRA.USERNAME, viewModel.username.value)
                         }

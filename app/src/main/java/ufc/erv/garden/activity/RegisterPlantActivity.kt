@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
@@ -25,6 +26,16 @@ class RegisterPlantActivity : AppCompatActivity() {
 
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         viewModel.setPhotoURI(uri)
+
+        val extension = uri.toString().apply {
+            substring(lastIndexOf(".") + 1)
+        }
+        uri?.let {
+            contentResolver.openInputStream(uri)?.let {
+                viewModel.imageBytes.value = it.readBytes()
+                viewModel.imageExt.value = extension
+            }
+        }
     }
 
     private object MESSAGE {
@@ -42,6 +53,9 @@ class RegisterPlantActivity : AppCompatActivity() {
             viewModel.clearError()
             getContent.launch("image/*")
         }
+
+        val auth = applicationContext.getSharedPreferences("SESSION_AUTH", 0)
+        viewModel.auth = auth
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
