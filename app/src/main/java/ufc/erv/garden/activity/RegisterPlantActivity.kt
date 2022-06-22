@@ -19,7 +19,7 @@ import ufc.erv.garden.R
 import ufc.erv.garden.databinding.RegisterPlantBinding
 import ufc.erv.garden.viewModel.RegisterPlantModel
 
-class RegisterPlantActivity : AppCompatActivity() {
+class RegisterPlantActivity : DrawerBaseActivity() {
     private val vTAG = "RegisterPlantActivity" /* Logger TAG */
     private lateinit var binding: RegisterPlantBinding
     private val viewModel: RegisterPlantModel by viewModels()
@@ -44,7 +44,7 @@ class RegisterPlantActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.register_plant)
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.register_plant, super.getRootForInflate(), true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 

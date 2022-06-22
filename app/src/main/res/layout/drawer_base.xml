@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="ufc.erv.garden.viewModel.DrawerBaseModel" />
+    </data>
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/main_drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="706dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <include layout="@layout/title_bar" app:menuOnClick="@{() -> viewModel.showMenu()}"/>
+            <FrameLayout
+                android:id="@+id/content_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="225dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="200dp"
+            android:layout_gravity="start"
+            android:orientation="horizontal">
+
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/main_nav_drawer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="start"
+                app:itemIconTint="?attr/colorSecondaryVariant"
+                app:menu="@menu/main_drawer"/>
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="match_parent"
+                android:background="?attr/colorSecondaryVariant" />
+        </LinearLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
+</layout>

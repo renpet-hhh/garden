@@ -17,7 +17,7 @@ import ufc.erv.garden.viewModel.MyPlantsModel
 import ufc.erv.garden.viewModel.SelectedPlantModel
 
 
-class MyPlantsActivity : AppCompatActivity() {
+class MyPlantsActivity : DrawerBaseActivity() {
     private val vTAG = "MainActivity" /* Logger TAG */
     private lateinit var binding: MyPlantsBinding
 
@@ -45,7 +45,7 @@ class MyPlantsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.my_plants)
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.my_plants, super.getRootForInflate(), true)
         binding.viewModel = viewModel
         binding.plantModel = selectedPlantModel
         binding.myPlantsList.adapter = PlantListAdapter {

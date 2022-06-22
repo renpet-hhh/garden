@@ -23,4 +23,8 @@
     <string name="register">Cadastrar</string>
     <string name="select_photo">Selecionar foto</string>
     <string name="image_to_be_registered">Imagem da planta a ser cadastrada</string>
+    <string name="feed">Feed</string>
+    <string name="exit">Sair</string>
+    <string name="settings">Configurações</string>
+    <string name="menu">Menu</string>
 </resources>
