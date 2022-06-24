@@ -28,4 +28,7 @@
     <string name="settings">Configurações</string>
     <string name="menu">Menu</string>
     <string name="auth_shared_preferences">ufc.erv.garden.SESSION_AUTH</string>
+    <string name="cadastro_de_usuarios">Cadastro de Usuários</string>
+    <string name="nome_de_usuario">Nome de Usuário</string>
+    <string name="senha">Senha</string>
 </resources>
