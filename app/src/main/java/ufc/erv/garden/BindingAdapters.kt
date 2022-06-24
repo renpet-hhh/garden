@@ -8,11 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.android.material.textfield.TextInputLayout
 import ufc.erv.garden.adapter.PlantListAdapter
+import ufc.erv.garden.adapter.PlantRequestListAdapter
 import ufc.erv.garden.data.Plant
+import ufc.erv.garden.data.PlantRequest
 
-@BindingAdapter("listData")
-fun bindRecyclerView(recyclerView: RecyclerView, data: List<Plant>?) {
+@BindingAdapter("listPlant")
+fun bindListPlant(recyclerView: RecyclerView, data: List<Plant>?) {
     val adapter = recyclerView.adapter as PlantListAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("listPlantRequest")
+fun bindListPlantRequest(recyclerView: RecyclerView, data: List<PlantRequest>?) {
+    val adapter = recyclerView.adapter as PlantRequestListAdapter
     adapter.submitList(data)
 }
 

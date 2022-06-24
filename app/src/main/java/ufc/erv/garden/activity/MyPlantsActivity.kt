@@ -34,7 +34,7 @@ class MyPlantsActivity : DrawerBaseActivity() {
     }
 
     private fun refreshPlants() {
-        selectedPlantModel.plant.value = null // deselect
+        selectedPlantModel.deselect()
         viewModel.httpGetPlants()
     }
 

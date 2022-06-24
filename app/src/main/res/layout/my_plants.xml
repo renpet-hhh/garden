@@ -43,7 +43,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/myPlantsTitle"
-            app:listData="@{viewModel.plants}"
+            app:listPlant="@{viewModel.plants}"
             tools:itemCount="10"
             tools:listitem="@layout/plant_item" />
 

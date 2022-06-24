@@ -1,0 +1,45 @@
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="request"
+            type="ufc.erv.garden.data.PlantRequest" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/plant_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:plant="@{request.plant}" />
+
+        <TextView
+            android:id="@+id/plant_request_item_owner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:singleLine="true"
+            android:text='@{"de " + request.owner}'
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include"
+            tools:text="de mock-user" />
+
+        <TextView
+            android:id="@+id/plant_request_item_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:singleLine="true"
+            android:text="@{request.date.toString()}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/plant_request_item_owner"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="01/01/2022" />
+    </androidx.constraintlayout.widget.ConstraintLayout></layout>

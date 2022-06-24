@@ -31,4 +31,7 @@
     <string name="cadastro_de_usuarios">Cadastro de Usuários</string>
     <string name="nome_de_usuario">Nome de Usuário</string>
     <string name="senha">Senha</string>
+    <string name="requests_menu">Menu de propostas</string>
+    <string name="requests_tab_layout_content_desc">Guias do menu de propostas</string>
+    <string name="requests">Propostas</string>
 </resources>
