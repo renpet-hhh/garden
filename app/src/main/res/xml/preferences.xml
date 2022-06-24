@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Desenvolvimento">
+
+        <EditTextPreference
+            android:defaultValue="mock"
+            android:key="server"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="Endereço do servidor. Utilize mock para carregar dados de demonstração"
+            android:title="Servidor" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Aparência">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="dark_mode"
+            android:title="Modo escuro" />
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

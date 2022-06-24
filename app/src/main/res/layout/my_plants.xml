@@ -28,40 +28,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/serverInput"
-            style="@style/Widget.Material3.TextInputLayout.FilledBox"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="@string/server"
-
-            app:endIconContentDescription="@string/commit"
-            app:endIconDrawable="@drawable/ic_baseline_done_24"
-            app:endIconMode="custom"
-            app:errorText="@{viewModel.error}"
-            app:errorEnabled="true"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/myPlantsTitle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/serverEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.server}"
-                android:afterTextChanged="@{() -> viewModel.clearError()}"
-                tools:text="mock" />
-        </com.google.android.material.textfield.TextInputLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/myPlantsList"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/item_border"
@@ -70,7 +42,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/serverInput"
+            app:layout_constraintTop_toBottomOf="@+id/myPlantsTitle"
             app:listData="@{viewModel.plants}"
             tools:itemCount="10"
             tools:listitem="@layout/plant_item" />
@@ -82,14 +54,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/item_border"
             android:visibility="@{plantModel.plant == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/myPlantsList"
             tools:layout="@layout/plant_info_frag" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

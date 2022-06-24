@@ -34,26 +34,32 @@ class MyPlantsModel : ViewModel() {
         const val DECODE_RESPONSE = "Erro interno do servidor"
     }
 
+    lateinit var server: String
 
     private val _error : MutableStateFlow<String> = MutableStateFlow("")
     val error : StateFlow<String> by this::_error
 
     private val username = "mock-user"
-    val server : MutableStateFlow<String> = MutableStateFlow("")
     private val _plants : MutableStateFlow<List<Plant>> = MutableStateFlow(listOf())
     val plants : StateFlow<List<Plant>> by this::_plants
 
-    fun resetPlants() {
+    private fun resetPlants() {
         _plants.value = listOf()
     }
 
     fun httpGetPlants() {
+        resetPlants()
+        if (server == "mock") {
+            setMockPlants()
+            clearError()
+            return
+        }
         viewModelScope.launch {
             val client = HttpClient(OkHttp) {
                 developmentMode = true
             }
             val response = client.runCatching {
-                get(server.value + "/u/${username}/plants")
+                get(server + "/u/${username}/plants")
             }
             if (response.isFailure) {
                 resetPlants()
@@ -71,7 +77,7 @@ class MyPlantsModel : ViewModel() {
             _plants.value = decoded.getOrThrow()
         }
     }
-    fun setMockPlants() {
+    private fun setMockPlants() {
         _plants.value = mockPlants
     }
 

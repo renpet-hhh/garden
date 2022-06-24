@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.preference.PreferenceManager
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 import ufc.erv.garden.R
@@ -54,8 +55,11 @@ class RegisterPlantActivity : DrawerBaseActivity() {
             getContent.launch("image/*")
         }
 
-        val auth = applicationContext.getSharedPreferences("SESSION_AUTH", 0)
+        /* Inicialização do viewModel */
+        val auth = applicationContext.getSharedPreferences(resources.getString(R.string.auth_shared_preferences), MODE_PRIVATE)
+        val server = PreferenceManager.getDefaultSharedPreferences(this).getString("server", "mock") ?: "mock"
         viewModel.auth = auth
+        viewModel.server = server
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

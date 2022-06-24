@@ -4,12 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.textfield.TextInputEditText
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
 import ufc.erv.garden.R
 import ufc.erv.garden.databinding.LoginBinding
@@ -20,31 +19,27 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: LoginBinding
     private val viewModel: LoginModel by viewModels()
 
-    private object EXTRA {
-        const val USERNAME = "ufc.erv.garden.USERNAME"
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val server = PreferenceManager.getDefaultSharedPreferences(this).getString("server", "mock") ?: "mock"
+        viewModel.server = server
+
         binding = DataBindingUtil.setContentView(this, R.layout.login)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.authenticated.collect {
-                        if (!it) return@collect
+                    viewModel.cookie.collect {
+                        if (it == null) return@collect
 
-                        val auth = applicationContext.getSharedPreferences("SESSION_AUTH", 0).edit()
-                        auth.putString("username", if (viewModel.username.value == "mock") "mock-user" else viewModel.username.value)
-                        auth.putString("password", viewModel.password.value)
+                        val auth = applicationContext.getSharedPreferences(resources.getString(R.string.auth_shared_preferences), MODE_PRIVATE).edit()
+                        auth.putString("username", viewModel.username.value)
+                        auth.putString("cookie", it)
                         auth.apply()
 
-                        val intent = Intent(this@LoginActivity.baseContext, RegisterPlantActivity::class.java).apply {
-                            putExtra(EXTRA.USERNAME, viewModel.username.value)
-                        }
+                        val intent = Intent(this@LoginActivity.baseContext, RegisterPlantActivity::class.java)
                         startActivity(intent)
                     }
                 }

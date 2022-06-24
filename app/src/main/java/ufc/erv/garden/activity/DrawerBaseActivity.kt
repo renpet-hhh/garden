@@ -35,27 +35,22 @@ open class DrawerBaseActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.mainNavDrawer.setNavigationItemSelectedListener {
             viewModel.hideMenu()
-            when (it.itemId) {
-                R.id.menu_item_register_plant -> {
-                    val intent = Intent(this@DrawerBaseActivity.baseContext, RegisterPlantActivity::class.java).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-                    }
-                    startActivity(intent)
-                }
-                R.id.menu_item_my_plants -> {
-                    val intent = Intent(this@DrawerBaseActivity.baseContext, MyPlantsActivity::class.java).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-                    }
-                    startActivity(intent)
-                }
+            val activity = when (it.itemId) {
+                R.id.menu_item_register_plant -> RegisterPlantActivity::class.java
+                R.id.menu_item_my_plants -> MyPlantsActivity::class.java
+                R.id.menu_item_settings -> SettingsActivity::class.java
+                else -> null
+            } ?: return@setNavigationItemSelectedListener true
+            val intent = Intent(this@DrawerBaseActivity.baseContext, activity).apply {
+                addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             }
+            startActivity(intent)
             return@setNavigationItemSelectedListener true
         }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.visible.collect {
-                    Log.d(vTAG, "visible: $it")
                     if (it) openDrawer() else closeDrawer()
                 }
             }

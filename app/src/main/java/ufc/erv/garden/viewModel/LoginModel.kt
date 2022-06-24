@@ -1,6 +1,5 @@
 package ufc.erv.garden.viewModel
 
-import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.*
@@ -9,7 +8,6 @@ import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,8 +26,13 @@ class LoginModel : ViewModel() {
     private val _error : MutableStateFlow<String> = MutableStateFlow("")
     val error : StateFlow<String> by this::_error
 
-    private val _authenticated : MutableSharedFlow<Boolean> = MutableSharedFlow(0, 0)
-    val authenticated : SharedFlow<Boolean> by this::_authenticated
+
+    private val _cookie : MutableSharedFlow<String?> = MutableSharedFlow(0, 0)
+    /** Indicador de sucesso da autenticação.
+    Quando uma String for emitida, ela é o cookie que autentica uma sessão e deve
+    ser enviado no cabeçalho Cookie nas próximas requisições.
+    Quando null for emitido, a autenticação falhou. */
+    val cookie : SharedFlow<String?> by this::_cookie
 
     val username : MutableStateFlow<String> = MutableStateFlow("")
     val password : MutableStateFlow<String> = MutableStateFlow("")
@@ -38,15 +41,18 @@ class LoginModel : ViewModel() {
     private val _password = "123456"
     private object PATH {
         const val login = "/login"
-        const val server = "https://f618-187-18-143-70.ngrok.io"
     }
+    lateinit var server: String
 
 
     fun tryAuthenticate() {
         viewModelScope.launch {
+            // cookie enviado pelo servidor para garantir esta sessão
+            // atualmente, é apenas um MOCK
+            val serverCookie = "zz-mock-cookie-123456789"
             val valid = username.value == _username && password.value == _password
             if (valid) {
-                _authenticated.emit(true)
+                _cookie.emit(serverCookie)
                 return@launch
             }
             val client = HttpClient(OkHttp) {
@@ -61,7 +67,7 @@ class LoginModel : ViewModel() {
                 }
             }
             val result = client.runCatching {
-                get(PATH.server + PATH.login)
+                get(server + PATH.login)
             }
             if (result.isFailure) {
                 _error.emit(ERROR.SERVER_CONNECT)
@@ -70,11 +76,11 @@ class LoginModel : ViewModel() {
             val response = result.getOrThrow()
             if (response.status != HttpStatusCode.OK) {
                 _error.emit(ERROR.NOT_AUTHORIZED)
-                _authenticated.emit(false)
+                _cookie.emit(null)
                 return@launch
             }
             clearError()
-            _authenticated.emit(true)
+            _cookie.emit(serverCookie)
         }
     }
 

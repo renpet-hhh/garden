@@ -1,9 +1,10 @@
 package ufc.erv.garden.activity
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.preference.PreferenceManager
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -25,16 +26,15 @@ class MyPlantsActivity : DrawerBaseActivity() {
     private val viewModel: MyPlantsModel by viewModels()
     private val selectedPlantModel: SelectedPlantModel by viewModels()
 
-    private fun tryRefresh(server: String) {
+    private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
+        /* Sincroniza a configuração */
+        if (key == "server") {
+            viewModel.server = pref.getString("server", "mock") ?: "mock"
+        }
+    }
+
+    private fun refreshPlants() {
         selectedPlantModel.plant.value = null // deselect
-        if (server == "mock") {
-            viewModel.setMockPlants()
-            return
-        }
-        if (server == "") {
-            viewModel.resetPlants()
-            return
-        }
         viewModel.httpGetPlants()
     }
 
@@ -45,31 +45,36 @@ class MyPlantsActivity : DrawerBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.my_plants, super.getRootForInflate(), true)
+        val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        viewModel.server = defaultSharedPreferences.getString("server", "mock") ?: "mock"
+
+        binding = DataBindingUtil.inflate(
+            layoutInflater,
+            R.layout.my_plants,
+            super.getRootForInflate(),
+            true
+        )
         binding.viewModel = viewModel
         binding.plantModel = selectedPlantModel
-        binding.myPlantsList.adapter = PlantListAdapter {
-            _, plant -> onPlantItemClick(plant)
+        binding.myPlantsList.adapter = PlantListAdapter { _, plant ->
+            onPlantItemClick(plant)
         }
         binding.lifecycleOwner = this
 
-        supportActionBar?.hide()
-
         /* Listeners */
-        binding.serverInput.setEndIconOnClickListener {
-            viewModel.server.value = binding.serverEdit.text.toString()
-        }
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .registerOnSharedPreferenceChangeListener(prefListener)
 
-        /* Collectors */
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.server.collect {
-                        tryRefresh(it)
-                    }
-                }
+                refreshPlants()
             }
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(prefListener)
     }
 }

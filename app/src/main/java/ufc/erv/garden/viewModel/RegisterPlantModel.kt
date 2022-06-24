@@ -29,12 +29,11 @@ class RegisterPlantModel : ViewModel() {
         const val MISSING_IMAGE = "Selecione uma foto"
     }
     private object PATH {
-        // atualize o endereço do servidor antes de compilar!
-        const val server = "https://f618-187-18-143-70.ngrok.io"
         const val register = "/register/plant"
     }
 
     lateinit var auth : SharedPreferences
+    lateinit var server : String
 
     /* Descrição textual do erro */
     private val _error = MutableStateFlow("")
@@ -81,6 +80,10 @@ class RegisterPlantModel : ViewModel() {
         viewModelScope.launch {
             val plantBeginRegistered = Plant("0", popText.value, sciText.value, descText.value, localText.value)
             if (!validateInput()) return@launch
+            if (server == "mock") {
+                _plant.emit(plantBeginRegistered)
+                return@launch
+            }
             val aUsername = auth.getString("username", "DEFAULT")
             val aPassword = auth.getString("password", "DEFAULT")
             if (aUsername == null || aPassword == null) {
@@ -103,7 +106,7 @@ class RegisterPlantModel : ViewModel() {
             }
             val result = client.runCatching {
                 submitFormWithBinaryData(
-                    url = PATH.server + PATH.register,
+                    url = server + PATH.register,
                     formData = formData {
                         append("popularName", plantBeginRegistered.popularName)
                         append("scientificName", plantBeginRegistered.scientificName)
