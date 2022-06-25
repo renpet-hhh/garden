@@ -34,4 +34,7 @@
     <string name="requests_menu">Menu de propostas</string>
     <string name="requests_tab_layout_content_desc">Guias do menu de propostas</string>
     <string name="requests">Propostas</string>
+    <string name="request_trade">Propor troca</string>
+    <string name="request_buy">Propor compra</string>
+    <string name="confirm_selection">Confirmar seleção</string>
 </resources>

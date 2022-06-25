@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ad"
+            type="ufc.erv.garden.data.PlantAd" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ad_plant_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardElevation="10dp"
+        app:strokeColor="?attr/colorPrimaryInverse"
+        app:strokeWidth="2dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="true">
+
+            <TextView
+                android:id="@+id/ad_plant_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@{ad.plant.popularName}"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Celósia" />
+
+            <ImageView
+                android:id="@+id/ad_plant_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/plant_item_image_description"
+                android:maxHeight="300dp"
+                app:imageUrl='@{"mock"}'
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ad_plant_title"
+                tools:srcCompat="@drawable/plant" />
+
+            <Button
+                android:id="@+id/ad_plant_trade_button"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:insetBottom="0dp"
+                android:text="@string/request_trade"
+                app:cornerRadius="0dp"
+                app:layout_constraintEnd_toStartOf="@+id/ad_plant_buy_button"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ad_plant_image" />
+
+            <Button
+                android:id="@+id/ad_plant_buy_button"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:insetBottom="0dp"
+                android:text="@string/request_buy"
+                app:cornerRadius="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ad_plant_trade_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ad_plant_trade_button" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</layout>

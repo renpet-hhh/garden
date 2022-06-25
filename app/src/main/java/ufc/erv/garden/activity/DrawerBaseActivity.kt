@@ -40,6 +40,7 @@ open class DrawerBaseActivity : AppCompatActivity() {
                 R.id.menu_item_my_plants -> MyPlantsActivity::class.java
                 R.id.menu_item_settings -> SettingsActivity::class.java
                 R.id.menu_item_requests -> RequestsActivity::class.java
+                R.id.menu_item_ad_feed -> AdFeedActivity::class.java
                 else -> null
             } ?: return@setNavigationItemSelectedListener true
             val intent = Intent(this@DrawerBaseActivity.baseContext, activity).apply {

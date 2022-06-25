@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:id="@+id/menu_main_group">
-        <item android:title="@string/feed" />
+        <item android:id="@+id/menu_item_ad_feed" android:title="@string/feed" />
     </group>
     <group android:id="@+id/menu_plant_management_group">
         <item

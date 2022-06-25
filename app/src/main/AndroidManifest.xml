@@ -40,6 +40,10 @@
             android:name=".activity.RequestsActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
+        <activity
+            android:name=".activity.AdFeedActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
     </application>
 
 </manifest>

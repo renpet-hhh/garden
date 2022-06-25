@@ -1,11 +1,13 @@
 package ufc.erv.garden.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -35,6 +37,8 @@ class MyPlantsModel : ViewModel() {
     }
 
     lateinit var server: String
+    var shouldReturnPlant = false
+    val returnedPlant = MutableSharedFlow<Plant>(0)
 
     private val _error : MutableStateFlow<String> = MutableStateFlow("")
     val error : StateFlow<String> by this::_error
@@ -42,6 +46,7 @@ class MyPlantsModel : ViewModel() {
     private val username = "mock-user"
     private val _plants : MutableStateFlow<List<Plant>> = MutableStateFlow(listOf())
     val plants : StateFlow<List<Plant>> by this::_plants
+
 
     private fun resetPlants() {
         _plants.value = listOf()
@@ -83,6 +88,13 @@ class MyPlantsModel : ViewModel() {
 
     fun clearError() {
         _error.value = ""
+    }
+
+    fun answer(plant: Plant?) {
+        Log.d(vTAG, "answer: $plant")
+        viewModelScope.launch {
+            plant?.let { returnedPlant.emit(it) }
+        }
     }
 
 }
