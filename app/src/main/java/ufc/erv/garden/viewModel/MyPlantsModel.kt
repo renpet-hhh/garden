@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +29,7 @@ val mockPlants: List<Plant> = listOf(
         description="Regar 2 vezes por semana. Luminosidade: meia-sombra. Plantar em vasos, jardineiras ou canteiros"),
 )
 
-class MyPlantsModel : ViewModel() {
+class MyPlantsModel : ContextualViewModel() {
     private val vTAG = "MyPlantsModel" /* Logger TAG */
 
     private object ERROR {
@@ -36,14 +37,12 @@ class MyPlantsModel : ViewModel() {
         const val DECODE_RESPONSE = "Erro interno do servidor"
     }
 
-    lateinit var server: String
     var shouldReturnPlant = false
     val returnedPlant = MutableSharedFlow<Plant>(0)
 
     private val _error : MutableStateFlow<String> = MutableStateFlow("")
     val error : StateFlow<String> by this::_error
 
-    private val username = "mock-user"
     private val _plants : MutableStateFlow<List<Plant>> = MutableStateFlow(listOf())
     val plants : StateFlow<List<Plant>> by this::_plants
 
@@ -54,17 +53,15 @@ class MyPlantsModel : ViewModel() {
 
     fun httpGetPlants() {
         resetPlants()
-        if (server == "mock") {
+        if (settings.server == "mock") {
             setMockPlants()
             clearError()
             return
         }
         viewModelScope.launch {
-            val client = HttpClient(OkHttp) {
-                developmentMode = true
-            }
+
             val response = client.runCatching {
-                get(server + "/u/${username}/plants")
+                get(settings.server + "/u/${auth.username}/plants")
             }
             if (response.isFailure) {
                 resetPlants()

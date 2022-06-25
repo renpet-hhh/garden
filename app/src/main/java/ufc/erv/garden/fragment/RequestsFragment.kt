@@ -9,9 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import kotlinx.coroutines.launch
 import ufc.erv.garden.R
 import ufc.erv.garden.adapter.PlantListAdapter
 import ufc.erv.garden.adapter.PlantRequestListAdapter
@@ -30,22 +34,12 @@ class RequestsFragment : Fragment() {
     private fun onRequestClick(request: PlantRequest) {
         selectedPlantModel.plant.value = request.plant
     }
-    private fun refresh() {
-        selectedPlantModel.deselect()
-        viewModel.refresh()
-        binding.root.postInvalidate()
-    }
 
-    override fun onResume() {
-        super.onResume()
-        val context = this.context
-        if (context != null) {
-            val server = PreferenceManager.getDefaultSharedPreferences(context).getString("server", "mock") ?: "mock"
-            if (server != viewModel.server) {
-                viewModel.server = server
-                refresh()
-            }
-        }
+    private fun syncModel() {
+        this.context?.let { viewModel.initialize(it) }
+    }
+    private fun refresh() {
+        viewModel.refresh()
     }
 
     override fun onCreateView(
@@ -53,12 +47,9 @@ class RequestsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val sent = arguments?.getBoolean("sent") ?: false
-        val server = arguments?.getString("server") ?: "mock"
-        val username = arguments?.getString("username") ?: "mock-user"
-        val cookie = arguments?.getString("cookie") ?: "mock-cookie"
+        syncModel()
 
-        viewModel.initialize(server, username, cookie)
+        val sent = arguments?.getBoolean("sent") ?: false
         viewModel.setType(sent)
         viewModel.refresh()
 
@@ -69,6 +60,13 @@ class RequestsFragment : Fragment() {
             onRequestClick(request)
         }
         binding.lifecycleOwner = viewLifecycleOwner
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                syncModel()
+                refresh()
+            }
+        }
         return binding.root
     }
 }

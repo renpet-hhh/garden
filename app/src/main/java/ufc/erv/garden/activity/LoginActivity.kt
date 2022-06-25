@@ -11,6 +11,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
 import ufc.erv.garden.R
+import ufc.erv.garden.data.AuthInfo
+import ufc.erv.garden.data.writeAuthInfo
 import ufc.erv.garden.databinding.LoginBinding
 import ufc.erv.garden.viewModel.LoginModel
 
@@ -19,27 +21,33 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: LoginBinding
     private val viewModel: LoginModel by viewModels()
 
+    private fun syncModel() {
+        viewModel.initialize(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val server = PreferenceManager.getDefaultSharedPreferences(this).getString("server", "mock") ?: "mock"
-        viewModel.server = server
+        viewModel.initialize(this)
 
         binding = DataBindingUtil.setContentView(this, R.layout.login)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                syncModel()
+
                 launch {
                     viewModel.cookie.collect {
                         if (it == null) return@collect
 
-                        val auth = applicationContext.getSharedPreferences(resources.getString(R.string.auth_shared_preferences), MODE_PRIVATE).edit()
-                        auth.putString("username", viewModel.username.value)
-                        auth.putString("cookie", it)
-                        auth.apply()
+                        AuthInfo(
+                            viewModel.usernameField.value, it
+                        ).writeAuthInfo(this@LoginActivity)
 
-                        val intent = Intent(this@LoginActivity.baseContext, RegisterPlantActivity::class.java)
+                        val intent = Intent(
+                            this@LoginActivity.baseContext,
+                            RegisterPlantActivity::class.java
+                        )
                         startActivity(intent)
                     }
                 }

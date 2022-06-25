@@ -9,14 +9,17 @@ import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
+import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.forms.*
+import io.ktor.client.utils.*
 import io.ktor.http.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import okhttp3.Cookie
 import ufc.erv.garden.R
 import ufc.erv.garden.data.Plant
 
-class RegisterPlantModel : ViewModel() {
+class RegisterPlantModel : ContextualViewModel() {
     private val vTAG = "MyPlantsModel" /* Logger TAG */
 
     private object ERROR {
@@ -31,9 +34,6 @@ class RegisterPlantModel : ViewModel() {
     private object PATH {
         const val register = "/register/plant"
     }
-
-    lateinit var auth : SharedPreferences
-    lateinit var server : String
 
     /* Descrição textual do erro */
     private val _error = MutableStateFlow("")
@@ -60,7 +60,6 @@ class RegisterPlantModel : ViewModel() {
         _photoURI.value = uri ?: defaultURI
     }
 
-
     private suspend fun validateInput(): Boolean {
         val obligatoryFields = listOf(popText)
         obligatoryFields.forEach {
@@ -80,14 +79,8 @@ class RegisterPlantModel : ViewModel() {
         viewModelScope.launch {
             val plantBeginRegistered = Plant("0", popText.value, sciText.value, descText.value, localText.value)
             if (!validateInput()) return@launch
-            if (server == "mock") {
+            if (settings.server == "mock") {
                 _plant.emit(plantBeginRegistered)
-                return@launch
-            }
-            val aUsername = auth.getString("username", "DEFAULT")
-            val aPassword = auth.getString("password", "DEFAULT")
-            if (aUsername == null || aPassword == null) {
-                _error.emit(ERROR.FORGOT_AUTH)
                 return@launch
             }
             val imgBytes = imageBytes.value
@@ -95,18 +88,9 @@ class RegisterPlantModel : ViewModel() {
                 _error.emit(ERROR.CLIENT_ERROR)
                 return@launch
             }
-            val client = HttpClient(OkHttp) {
-                install(Auth) {
-                    digest {
-                        credentials {
-                            DigestAuthCredentials(aUsername, aPassword)
-                        }
-                    }
-                }
-            }
             val result = client.runCatching {
                 submitFormWithBinaryData(
-                    url = server + PATH.register,
+                    url = settings.server + PATH.register,
                     formData = formData {
                         append("popularName", plantBeginRegistered.popularName)
                         append("scientificName", plantBeginRegistered.scientificName)

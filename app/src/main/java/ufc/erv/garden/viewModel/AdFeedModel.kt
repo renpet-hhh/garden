@@ -1,6 +1,5 @@
 package ufc.erv.garden.viewModel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +10,7 @@ import ufc.erv.garden.data.Plant
 import ufc.erv.garden.data.PlantAd
 import java.time.LocalDateTime
 
-class AdFeedModel : ViewModel() {
+class AdFeedModel : ContextualViewModel() {
     private val _ads = MutableStateFlow<List<PlantAd>?>(null)
     /** Lista dos anúncios */
     val ads = _ads.asStateFlow()
@@ -25,21 +24,11 @@ class AdFeedModel : ViewModel() {
      * É a planta escolhida pelo usuário atual */
     val tradePlant = _tradePlant.asSharedFlow()
 
-    lateinit var server: String
-    private lateinit var username: String
-    private lateinit var cookie: String
-
-    fun initialize(server: String, username: String, cookie: String) {
-        this.server = server
-        this.username = username
-        this.cookie = cookie
-    }
-
     fun reset() {
         _ads.value = null
     }
     fun refresh() {
-        _ads.value = if (server == "mock") _mockAds else httpRequest()
+        _ads.value = if (settings.server == "mock") _mockAds else httpRequest()
     }
     fun deselect() {
         _selectedAd.value = null

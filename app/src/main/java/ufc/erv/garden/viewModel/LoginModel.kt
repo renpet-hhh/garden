@@ -1,6 +1,5 @@
 package ufc.erv.garden.viewModel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LoginModel : ViewModel() {
+class LoginModel : ContextualViewModel() {
     private val vTAG = "MyPlantsModel" /* Logger TAG */
 
     private object ERROR {
@@ -34,40 +33,27 @@ class LoginModel : ViewModel() {
     Quando null for emitido, a autenticação falhou. */
     val cookie : SharedFlow<String?> by this::_cookie
 
-    val username : MutableStateFlow<String> = MutableStateFlow("")
-    val password : MutableStateFlow<String> = MutableStateFlow("")
+    val usernameField : MutableStateFlow<String> = MutableStateFlow("")
+    val passwordField : MutableStateFlow<String> = MutableStateFlow("")
 
     private val _username = "mock"
     private val _password = "123456"
     private object PATH {
         const val login = "/login"
     }
-    lateinit var server: String
-
 
     fun tryAuthenticate() {
         viewModelScope.launch {
             // cookie enviado pelo servidor para garantir esta sessão
             // atualmente, é apenas um MOCK
             val serverCookie = "zz-mock-cookie-123456789"
-            val valid = username.value == _username && password.value == _password
+            val valid = usernameField.value == _username && passwordField.value == _password
             if (valid) {
                 _cookie.emit(serverCookie)
                 return@launch
             }
-            val client = HttpClient(OkHttp) {
-                developmentMode = true
-                install(Auth) {
-                    digest {
-                        credentials {
-                            DigestAuthCredentials(this@LoginModel.username.value, this@LoginModel.password.value)
-                        }
-                        realm = "Authorization required"
-                    }
-                }
-            }
             val result = client.runCatching {
-                get(server + PATH.login)
+                get(settings.server + PATH.login)
             }
             if (result.isFailure) {
                 _error.emit(ERROR.SERVER_CONNECT)

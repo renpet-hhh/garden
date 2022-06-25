@@ -4,10 +4,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.launch
 import ufc.erv.garden.R
 import ufc.erv.garden.adapter.PlantListAdapter
 import ufc.erv.garden.databinding.RequestsBinding
@@ -20,13 +24,8 @@ class RequestsActivity: DrawerBaseActivity() {
 
     private val selectedPlantModel: SelectedPlantModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val server = PreferenceManager.getDefaultSharedPreferences(this).getString("server", "mock") ?: "mock"
-        val auth = applicationContext.getSharedPreferences(resources.getString(R.string.auth_shared_preferences), MODE_PRIVATE)
-        val username = auth.getString("username", "mock-user") ?: "mock-user"
-        val cookie = auth.getString("cookie", "mock-cookie") ?: "mock-cookie"
 
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.requests, getRootForInflate(), true)
         binding.requestsPage.adapter = object : FragmentStateAdapter(this) {
@@ -35,9 +34,6 @@ class RequestsActivity: DrawerBaseActivity() {
                 val fragment = RequestsFragment()
                 fragment.arguments = Bundle().apply {
                     putBoolean("sent", position == 1)
-                    putString("server", server)
-                    putString("username", username)
-                    putString("cookie", cookie)
                 }
                 return fragment
             }
@@ -62,6 +58,5 @@ class RequestsActivity: DrawerBaseActivity() {
                 selectedPlantModel.deselect()
             }
         })
-
     }
 }

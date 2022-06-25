@@ -1,6 +1,5 @@
 package ufc.erv.garden.activity
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
 import ufc.erv.garden.R
 import ufc.erv.garden.adapter.PlantAdListAdapter
@@ -63,6 +61,9 @@ class AdFeedActivity : DrawerBaseActivity() {
         confirmBuyRequest(ad)
     }
 
+    private fun syncModel() {
+        viewModel.initialize(this)
+    }
     private fun refresh() {
         viewModel.refresh()
     }
@@ -109,25 +110,9 @@ class AdFeedActivity : DrawerBaseActivity() {
             .show()
     }
 
-    private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
-        /* Sincroniza a configuração */
-        if (key == "server") {
-            viewModel.server = pref.getString("server", "mock") ?: "mock"
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val server = PreferenceManager.getDefaultSharedPreferences(this).getString("server", "mock")
-            ?: "mock"
-        val auth = applicationContext.getSharedPreferences(
-            resources.getString(R.string.auth_shared_preferences),
-            MODE_PRIVATE
-        )
-        val username = auth.getString("username", "mock-user") ?: "mock-user"
-        val cookie = auth.getString("cookie", "mock-cookie") ?: "mock-cookie"
-        viewModel.initialize(server, username, cookie)
+        syncModel()
 
         binding = DataBindingUtil.inflate(
             layoutInflater,
@@ -140,12 +125,10 @@ class AdFeedActivity : DrawerBaseActivity() {
             PlantAdListAdapter(this::onPlantImageClick, this::onTradeClick, this::onBuyClick)
         binding.lifecycleOwner = this
 
-        /* Listeners */
-        PreferenceManager.getDefaultSharedPreferences(this)
-            .registerOnSharedPreferenceChangeListener(prefListener)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                syncModel()
                 refresh()
 
                 launch {
@@ -163,12 +146,5 @@ class AdFeedActivity : DrawerBaseActivity() {
             }
         }
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(vTAG, "onDestroy")
-        PreferenceManager.getDefaultSharedPreferences(this)
-            .unregisterOnSharedPreferenceChangeListener(prefListener)
     }
 }

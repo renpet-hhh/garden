@@ -2,9 +2,7 @@ package ufc.erv.garden.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
@@ -39,14 +37,10 @@ class MyPlantsActivity : DrawerBaseActivity() {
     private val viewModel: MyPlantsModel by viewModels()
     private val selectedPlantModel: SelectedPlantModel by viewModels()
 
-    private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
-        /* Sincroniza a configuração */
-        if (key == "server") {
-            viewModel.server = pref.getString("server", "mock") ?: "mock"
-        }
+    private fun syncModel() {
+        viewModel.initialize(this)
     }
-
-    private fun refreshPlants() {
+    private fun refresh() {
         selectedPlantModel.deselect()
         viewModel.httpGetPlants()
     }
@@ -58,8 +52,8 @@ class MyPlantsActivity : DrawerBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        viewModel.server = defaultSharedPreferences.getString("server", "mock") ?: "mock"
+        syncModel()
+
         viewModel.shouldReturnPlant = intent.getBooleanExtra(EXTRAS.RETURN_PLANT, false)
         binding = if (viewModel.shouldReturnPlant) {
             DataBindingUtil.setContentView(this, R.layout.my_plants)
@@ -78,13 +72,10 @@ class MyPlantsActivity : DrawerBaseActivity() {
         }
         binding.lifecycleOwner = this
 
-        /* Listeners */
-        PreferenceManager.getDefaultSharedPreferences(this)
-            .registerOnSharedPreferenceChangeListener(prefListener)
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                refreshPlants()
+                syncModel()
+                refresh()
 
                 if (viewModel.shouldReturnPlant) {
                     launch {
@@ -109,10 +100,5 @@ class MyPlantsActivity : DrawerBaseActivity() {
         }
         setResult(Activity.RESULT_OK, result)
         finish()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(prefListener)
     }
 }

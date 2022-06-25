@@ -43,8 +43,14 @@ class RegisterPlantActivity : DrawerBaseActivity() {
         const val SUCCESSFUL_REGISTER = "Planta cadastrada com sucesso [MOCK]"
     }
 
+    private fun syncModel() {
+        viewModel.initialize(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        syncModel()
+
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.register_plant, super.getRootForInflate(), true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -55,14 +61,10 @@ class RegisterPlantActivity : DrawerBaseActivity() {
             getContent.launch("image/*")
         }
 
-        /* Inicialização do viewModel */
-        val auth = applicationContext.getSharedPreferences(resources.getString(R.string.auth_shared_preferences), MODE_PRIVATE)
-        val server = PreferenceManager.getDefaultSharedPreferences(this).getString("server", "mock") ?: "mock"
-        viewModel.auth = auth
-        viewModel.server = server
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                syncModel()
+
                 launch {
                     viewModel.plant.collect {
                         Log.d(vTAG, "plant: $it")
