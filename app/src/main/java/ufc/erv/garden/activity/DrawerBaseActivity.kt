@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import ufc.erv.garden.R
 import ufc.erv.garden.databinding.DrawerBaseBinding
+import ufc.erv.garden.singleton.Client
 import ufc.erv.garden.viewModel.DrawerBaseModel
 
 open class DrawerBaseActivity : AppCompatActivity() {
@@ -35,6 +36,15 @@ open class DrawerBaseActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.mainNavDrawer.setNavigationItemSelectedListener {
             viewModel.hideMenu()
+            if (it.itemId == R.id.menu_item_logout) {
+                Client.logout()
+                val intent = Intent(this@DrawerBaseActivity.baseContext, LoginActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }
+                startActivity(intent)
+                return@setNavigationItemSelectedListener true
+            }
             val activity = when (it.itemId) {
                 R.id.menu_item_register_plant -> RegisterPlantActivity::class.java
                 R.id.menu_item_my_plants -> MyPlantsActivity::class.java

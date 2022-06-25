@@ -22,6 +22,7 @@
             android:text="@string/menu"
             app:cornerRadius="0dp"
             app:icon="@drawable/menu"
+            android:backgroundTint="?attr/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

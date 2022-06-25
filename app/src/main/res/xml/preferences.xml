@@ -7,7 +7,6 @@
             android:defaultValue="mock"
             android:key="server"
             android:selectAllOnFocus="true"
-            android:singleLine="true"
             android:summary="Endereço do servidor. Utilize mock para carregar dados de demonstração"
             android:title="Servidor" />
     </PreferenceCategory>

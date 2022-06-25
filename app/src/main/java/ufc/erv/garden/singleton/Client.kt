@@ -10,7 +10,11 @@ object Client {
     fun restart() {
         client = new()
     }
+    fun logout() {
+        restart()
+    }
     private fun new() = HttpClient(OkHttp) {
         install(HttpCookies)
     }
+
 }
