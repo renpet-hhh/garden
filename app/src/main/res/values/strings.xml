@@ -40,6 +40,11 @@
     <string name="email">Email</string>
     <string name="whatsapp">WhatsApp</string>
     <string name="cadastre_se">Cadastre-se</string>
+    <string name="my_email">My Email</string>
+    <string name="my_contact">My Contact</string>
+    <string name="perfil">Perfil</string>
+    <string name="salvar">Salvar</string>
+    <string name="my_name">My Name</string>
     <string-array name="estados">
         <item>Ceará</item>
         <item>São Paulo</item>

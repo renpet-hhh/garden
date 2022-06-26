@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_email">My Email</string>
+    <string name="my_contact">My Contact</string>
+    <string name="perfil">Perfil</string>
+    <string name="salvar">Salvar</string>
+    <string name="my_name">My Name</string>
+</resources>
