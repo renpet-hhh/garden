@@ -2,6 +2,7 @@ package ufc.erv.garden.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,15 +31,15 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewModel.initialize(this)
 
-        /*val RegActBtn = findViewById<Button>(R.id.regButton)
-        RegActBtn.setOnClickListener {
-            val Intent = Intent(this, RegisterUserActivity::class.java)
-            startActivity(Intent)
-        } */
-
         binding = DataBindingUtil.setContentView(this, R.layout.login)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        val regActBtn = binding.regButton
+        regActBtn.setOnClickListener {
+
+            val intent = Intent(this, RegisterUserActivity::class.java)
+            startActivity(intent)
+        }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 syncModel()

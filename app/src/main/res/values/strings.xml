@@ -45,6 +45,11 @@
     <string name="perfil">Perfil</string>
     <string name="salvar">Salvar</string>
     <string name="my_name">My Name</string>
+    <string name="estado">Estado</string>
+    <string name="cear">Ceará</string>
+    <string name="cidade">Cidade</string>
+    <string name="fortaleza">Fortaleza</string>
+    <string name="foto_de_perfil_do_usu_rio">Foto de perfil do usuário</string>
     <string-array name="estados">
         <item>Ceará</item>
         <item>São Paulo</item>
