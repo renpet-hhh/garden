@@ -1,15 +1,14 @@
 package ufc.erv.garden.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import ufc.erv.garden.R
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : DrawerBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.profile)
+        layoutInflater.inflate(R.layout.profile, super.getRootForInflate(), true)
 
         val states = resources.getStringArray(R.array.estados)
         val arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, states)
