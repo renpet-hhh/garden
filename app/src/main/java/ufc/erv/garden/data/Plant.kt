@@ -4,9 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Plant(
-    val id: String,
-    var popularName: String,
-    var scientificName: String = "",
-    var description: String = "",
-    var localization: String = "",
+    val id: Int,
+    val popularName: String,
+    val scientificName: String? = null,
+    val description: String? = null,
 )

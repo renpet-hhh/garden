@@ -67,15 +67,15 @@ class MyPlantsActivity : DrawerBaseActivity() {
         }
         binding.viewModel = viewModel
         binding.plantModel = selectedPlantModel
-        binding.myPlantsList.adapter = PlantListAdapter { _, plant ->
+        binding.myPlantsList.adapter = PlantListAdapter(this) { _, plant ->
             onPlantItemClick(plant)
         }
         binding.lifecycleOwner = this
+        refresh()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 syncModel()
-                refresh()
 
                 if (viewModel.shouldReturnPlant) {
                     launch {

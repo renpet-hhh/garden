@@ -2,20 +2,21 @@ package ufc.erv.garden.viewModel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import ufc.erv.garden.data.AuthInfo
+import io.ktor.client.*
 import ufc.erv.garden.data.SettingsInfo
-import ufc.erv.garden.data.readAuthInfo
 import ufc.erv.garden.data.readSettingsInfo
 import ufc.erv.garden.singleton.Client
+import ufc.erv.garden.singleton.SessionData
 
 open class ContextualViewModel : ViewModel() {
     protected lateinit var settings: SettingsInfo
-    protected lateinit var auth: AuthInfo
     fun initialize(context: Context) {
         settings = readSettingsInfo(context)
-        auth = readAuthInfo(context)
     }
 
 
-    protected val client = Client.get()
+    protected val client: HttpClient
+        get() = Client.get()
+    val auth: SessionData
+        get() = Client.data()
 }

@@ -8,12 +8,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
 import ufc.erv.garden.R
-import ufc.erv.garden.data.AuthInfo
-import ufc.erv.garden.data.writeAuthInfo
 import ufc.erv.garden.databinding.LoginBinding
+import ufc.erv.garden.singleton.Client
 import ufc.erv.garden.viewModel.LoginModel
 
 class LoginActivity : AppCompatActivity() {
@@ -25,6 +23,17 @@ class LoginActivity : AppCompatActivity() {
         viewModel.initialize(this)
     }
 
+    private fun openSettings() {
+        val intent = Intent(
+            this@LoginActivity.baseContext,
+            SettingsActivity::class.java
+        )
+        intent.apply {
+            putExtra(SettingsActivity.EXTRAS.LOGGED_IN, false)
+        }
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.initialize(this)
@@ -32,18 +41,17 @@ class LoginActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.login)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
+        // Listeners
+        binding.loginSettingsBttn.setOnClickListener { openSettings() }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 syncModel()
 
                 launch {
-                    viewModel.cookie.collect {
-                        if (it == null) return@collect
-
-                        AuthInfo(
-                            viewModel.usernameField.value, it
-                        ).writeAuthInfo(this@LoginActivity)
-
+                    viewModel.success.collect {
+                        Client.fakeLogin("mock-user")
                         val intent = Intent(
                             this@LoginActivity.baseContext,
                             RegisterPlantActivity::class.java

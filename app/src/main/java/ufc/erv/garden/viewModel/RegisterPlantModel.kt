@@ -1,21 +1,12 @@
 package ufc.erv.garden.viewModel
 
-import android.content.SharedPreferences
 import android.net.Uri
-import androidx.core.net.toFile
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.ktor.client.*
-import io.ktor.client.engine.okhttp.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
-import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.forms.*
-import io.ktor.client.utils.*
 import io.ktor.http.*
+import io.ktor.utils.io.core.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import okhttp3.Cookie
 import ufc.erv.garden.R
 import ufc.erv.garden.data.Plant
 
@@ -38,6 +29,9 @@ class RegisterPlantModel : ContextualViewModel() {
     /* Descrição textual do erro */
     private val _error = MutableStateFlow("")
     val error by this::_error
+    
+    private val _fetching = MutableStateFlow(false)
+    val fetching by this::_fetching
 
     /* Indicador de sucesso da operação */
     private val _plant : MutableSharedFlow<Plant?> = MutableSharedFlow()
@@ -76,8 +70,9 @@ class RegisterPlantModel : ContextualViewModel() {
     }
 
     fun tryRegisterPlant() {
+        _fetching.value = true
         viewModelScope.launch {
-            val plantBeginRegistered = Plant("0", popText.value, sciText.value, descText.value, localText.value)
+            val plantBeginRegistered = Plant(0, popText.value, sciText.value, descText.value)
             if (!validateInput()) return@launch
             if (settings.server == "mock") {
                 _plant.emit(plantBeginRegistered)
@@ -93,12 +88,15 @@ class RegisterPlantModel : ContextualViewModel() {
                     url = settings.server + PATH.register,
                     formData = formData {
                         append("popularName", plantBeginRegistered.popularName)
-                        append("scientificName", plantBeginRegistered.scientificName)
-                        append("localization", plantBeginRegistered.localization)
-                        append("description", plantBeginRegistered.description)
-                        append("image", imgBytes, Headers.build {
+                        append("scientificName", plantBeginRegistered.scientificName ?: "")
+                        append("description", plantBeginRegistered.description ?: "")
+                        appendInput("image", Headers.build {
                             append(HttpHeaders.ContentType, "image/${imageExt.value}")
-                        })
+                        }) {
+                            buildPacket {
+                                writeFully(imgBytes)
+                            }
+                        }
                     }
                 )
             }
@@ -114,6 +112,8 @@ class RegisterPlantModel : ContextualViewModel() {
             clearError()
             _plant.emit(plantBeginRegistered)
             resetState()
+        }.invokeOnCompletion {
+            _fetching.value = false
         }
     }
     fun clearError() {

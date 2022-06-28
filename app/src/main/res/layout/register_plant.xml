@@ -87,7 +87,7 @@
                 android:layout_weight="1"
                 android:afterTextChanged="@{() -> viewModel.clearError()}"
                 android:inputType="text"
-                android:nextFocusDown="@id/localEdit"
+                android:nextFocusDown="@id/descEdit"
                 android:singleLine="true"
                 android:text="@={viewModel.sciText}"
                 tools:layout_editor_absoluteX="103dp"
@@ -105,21 +105,7 @@
             android:hint="@string/localization"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/localEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:afterTextChanged="@{() -> viewModel.clearError()}"
-                android:inputType="text"
-                android:nextFocusDown="@id/descEdit"
-                android:singleLine="true"
-                android:text="@={viewModel.localText}"
-                tools:layout_editor_absoluteX="103dp"
-                tools:layout_editor_absoluteY="93dp" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout4"
@@ -167,6 +153,7 @@
             android:layout_height="wrap_content"
             android:onClick="@{() -> viewModel.tryRegisterPlant()}"
             android:text="@string/register"
+            android:enabled="@{!viewModel.fetching}"
             app:cornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
