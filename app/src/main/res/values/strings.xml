@@ -37,4 +37,30 @@
     <string name="request_trade">Propor troca</string>
     <string name="request_buy">Propor compra</string>
     <string name="confirm_selection">Confirmar seleção</string>
+    <string name="email">Email</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="cadastre_se">Cadastre-se</string>
+    <string name="my_email">My Email</string>
+    <string name="my_contact">My Contact</string>
+    <string name="perfil">Perfil</string>
+    <string name="salvar">Salvar</string>
+    <string name="my_name">My Name</string>
+    <string name="estado">Estado</string>
+    <string name="cear">Ceará</string>
+    <string name="cidade">Cidade</string>
+    <string name="fortaleza">Fortaleza</string>
+    <string name="foto_de_perfil_do_usu_rio">Foto de perfil do usuário</string>
+    <string-array name="estados">
+        <item>Ceará</item>
+        <item>São Paulo</item>
+        <item>Rio de Janeiro</item>
+        <item>Pará</item>
+    </string-array>
+    <string-array name="cidades">
+        <item>Fortaleza</item>
+        <item>São Paulo</item>
+        <item>Rio de Janeiro</item>
+        <item>Belém</item>
+    </string-array>
+
 </resources>
