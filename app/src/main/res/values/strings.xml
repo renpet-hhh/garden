@@ -40,27 +40,197 @@
     <string name="email">Email</string>
     <string name="whatsapp">WhatsApp</string>
     <string name="cadastre_se">Cadastre-se</string>
-    <string name="my_email">My Email</string>
-    <string name="my_contact">My Contact</string>
+    <string name="contact">Contato</string>
     <string name="perfil">Perfil</string>
     <string name="salvar">Salvar</string>
-    <string name="my_name">My Name</string>
     <string name="estado">Estado</string>
     <string name="cear">Ceará</string>
     <string name="cidade">Cidade</string>
     <string name="fortaleza">Fortaleza</string>
     <string name="foto_de_perfil_do_usu_rio">Foto de perfil do usuário</string>
+    <string name="profile_avatar">Foto de perfil</string>
+    <string name="reset">Resetar</string>
     <string-array name="estados">
+        <item>Acre</item>
+        <item>Alagoas</item>
+        <item>Amapá</item>
+        <item>Amazonas</item>
+        <item>Bahia</item>
         <item>Ceará</item>
-        <item>São Paulo</item>
-        <item>Rio de Janeiro</item>
+        <item>Distrito Federal</item>
+        <item>Espírito Santo</item>
+        <item>Goiás</item>
+        <item>Maranhão</item>
+        <item>Mato Grosso</item>
+        <item>Mato Grosso do Sul</item>
+        <item>Minas Gerais</item>
         <item>Pará</item>
-    </string-array>
-    <string-array name="cidades">
-        <item>Fortaleza</item>
-        <item>São Paulo</item>
+        <item>Paraíba</item>
+        <item>Paraná</item>
+        <item>Pernambuco</item>
+        <item>Piauí</item>
         <item>Rio de Janeiro</item>
-        <item>Belém</item>
+        <item>Rio Grande do Norte</item>
+        <item>Rio Grande do Sul</item>
+        <item>Rondônia</item>
+        <item>Roraima</item>
+        <item>Santa Catarina</item>
+        <item>São Paulo</item>
+        <item>Sergipe</item>
+        <item>Tocantins</item>
     </string-array>
-
+    <string-array name="cities_ac">
+        <item>Rio Branco</item>
+    </string-array>
+    <string-array name="cities_al">
+        <item>Arapiraca</item>
+        <item>Maceió</item>
+    </string-array>
+    <string-array name="cities_ap">
+        <item>Macapá</item>
+    </string-array>
+    <string-array name="cities_am">
+        <item>Manaus</item>
+    </string-array>
+    <string-array name="cities_ba">
+        <item>Feira de Santana</item>
+        <item>Itabuna e Ilhéus</item>
+        <item>Porto Seguro</item>
+        <item>Salvador</item>
+        <item>Vitória da Conquista</item>
+    </string-array>
+    <string-array name="cities_ce">
+        <item>Fortaleza</item>
+        <item>Juazeiro do Norte</item>
+        <item>Mossoró</item>
+        <item>Sobral</item>
+    </string-array>
+    <string-array name="cities_df">
+        <item>Brasília</item>
+    </string-array>
+    <string-array name="cities_es">
+        <item>Cachoeiro de Itapemirim</item>
+        <item>Linhares</item>
+        <item>Vitória</item>
+    </string-array>
+    <string-array name="cities_go">
+        <item>Anápolis</item>
+        <item>Goiânia</item>
+        <item>Rio Verde</item>
+    </string-array>
+    <string-array name="cities_ma">
+        <item>Imperatriz</item>
+        <item>São Luís</item>
+    </string-array>
+    <string-array name="cities_mt">
+        <item>Cuiabá</item>
+        <item>Rondonópolis</item>
+    </string-array>
+    <string-array name="cities_ms">
+        <item>Campo Grande</item>
+        <item>Dourados</item>
+    </string-array>
+    <string-array name="cities_mg">
+        <item>Barbacena</item>
+        <item>Belo Horizonte</item>
+        <item>Conselheiro Lafaiete</item>
+        <item>Divinópolis</item>
+        <item>Governador Valadares</item>
+        <item>Ipatinga</item>
+        <item>Juiz de Fora</item>
+        <item>Montes Claros</item>
+        <item>Patos de Minas</item>
+        <item>Poços de Caldas</item>
+        <item>Pouso Alegre</item>
+        <item>Uberaba</item>
+        <item>Uberlândia</item>
+        <item>Varginha</item>
+    </string-array>
+    <string-array name="cities_pa">
+        <item>Belém</item>
+        <item>Marabá</item>
+        <item>Parauapebas</item>
+    </string-array>
+    <string-array name="cities_pb">
+        <item>Campina Grande</item>
+        <item>João Pessoa</item>
+    </string-array>
+    <string-array name="cities_pr">
+        <item>Cascavel</item>
+        <item>Curitiba</item>
+        <item>Foz do Iguaçu</item>
+        <item>Guarapuava</item>
+        <item>Londrina</item>
+        <item>Maringá</item>
+        <item>Ponta Grossa</item>
+    </string-array>
+    <string-array name="cities_pe">
+        <item>Caruaru</item>
+        <item>Petrolina</item>
+        <item>Recife</item>
+    </string-array>
+    <string-array name="cities_pi">
+        <item>Teresina</item>
+    </string-array>
+    <string-array name="cities_rj">
+        <item>Angra dos Reis</item>
+        <item>Cabo Frio</item>
+        <item>Campos dos Goytacazes</item>
+        <item>Macaé</item>
+        <item>Nova Friburgo</item>
+        <item>Petrópolis</item>
+        <item>Rio de Janeiro</item>
+        <item>Volta Redonda</item>
+    </string-array>
+    <string-array name="cities_rn">
+        <item>Natal</item>
+    </string-array>
+    <string-array name="cities_rs">
+        <item>Caxias do Sul</item>
+        <item>Passo Fundo</item>
+        <item>Pelotas</item>
+        <item>Porto Alegre</item>
+        <item>Santa Cruz do Sul</item>
+        <item>Santa Maria</item>
+    </string-array>
+    <string-array name="cities_ro">
+        <item>Porto Velho</item>
+    </string-array>
+    <string-array name="cities_rr">
+        <item>Boa </item>
+    </string-array>
+    <string-array name="cities_sc">
+        <item>Blumenau</item>
+        <item>Chapecó</item>
+        <item>Criciúma</item>
+        <item>Florianópolis</item>
+        <item>Itajaí</item>
+        <item>Joinville</item>
+        <item>Lages</item>
+    </string-array>
+    <string-array name="cities_sp">
+        <item>Araçatuba</item>
+        <item>Bauru</item>
+        <item>Botucatu</item>
+        <item>Bragança Paulista</item>
+        <item>Campinas</item>
+        <item>Franca</item>
+        <item>Marília</item>
+        <item>Mogi Guaçu</item>
+        <item>Piracicaba</item>
+        <item>Presidente Prudente</item>
+        <item>Ribeirão Preto</item>
+        <item>Santos</item>
+        <item>São Carlos</item>
+        <item>São José do Rio Preto</item>
+        <item>São José dos Campos</item>
+        <item>São Paulo</item>
+        <item>Sorocaba</item>
+    </string-array>
+    <string-array name="cities_se">
+        <item>Aracaju</item>
+    </string-array>
+    <string-array name="cities_to">
+        <item>Palmas</item>
+    </string-array>
 </resources>

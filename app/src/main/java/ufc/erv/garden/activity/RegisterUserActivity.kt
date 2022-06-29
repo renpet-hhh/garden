@@ -20,10 +20,5 @@ class RegisterUserActivity : AppCompatActivity() {
         val arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, states)
         val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.stateEdit)
         autoCompleteTextView.setAdapter(arrayAdapter)
-
-        val cities = resources.getStringArray(R.array.cidades)
-        val arrayAdapter2 = ArrayAdapter(this, R.layout.dropdown_item, cities)
-        val autoCompleteTextView2 = findViewById<AutoCompleteTextView>(R.id.cityEdit)
-        autoCompleteTextView2.setAdapter(arrayAdapter2)
     }
 }

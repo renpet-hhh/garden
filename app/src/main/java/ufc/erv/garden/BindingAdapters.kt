@@ -1,6 +1,7 @@
 package ufc.erv.garden
 
 import android.net.Uri
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
