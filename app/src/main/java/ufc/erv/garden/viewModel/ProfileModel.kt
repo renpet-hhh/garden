@@ -11,27 +11,64 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import ufc.erv.garden.data.CitiesByState
 import ufc.erv.garden.data.Profile
+import ufc.erv.garden.model.FormModel
+import ufc.erv.garden.model.TaskModel
 
 
 class ProfileModel: ContextualViewModel() {
     private val vTAG = "ProfileModel"
-
     private val fallbackProfile = Profile("", "", "", "")
-    private var savedProfile = fallbackProfile
-    val name = MutableStateFlow("")
-    val email = MutableStateFlow("")
-    val city = MutableStateFlow("")
-    val state = MutableStateFlow("")
 
+    private val _error = MutableStateFlow("")
+    val error = _error.asStateFlow()
 
-    fun fetchData() {
-        viewModelScope.launch {
-            resetToNewProfile(getProfileData())
+    private val _saveSuccess = MutableSharedFlow<Unit>(0)
+    val saveSuccess = _saveSuccess.asSharedFlow()
+
+    private fun isCityValid(city: String): Boolean {
+        return CitiesByState.isValidCity(city, formModel.getText("state"))
+    }
+    private fun isStateValid(state: String): Boolean {
+        return CitiesByState.isValidState(state)
+    }
+
+    val formModel = FormModel(viewModelScope) {
+        text("name") {
+            load { getCachedProfileData().name }
+            error(0, "Deve possuir no mínimo 4 caracteres")
+            check { if (text.length >= 4) null else 0 }
+        }
+        text("email") {
+            load { getCachedProfileData().email }
+            error(0, "Não contém @")
+            check { if ('@' in text) null else 0 }
+        }
+        text("city") {
+            load { getCachedProfileData().city }
+            error(0, "Não é cidade do Estado")
+            check { if (isCityValid(text)) null else 0 }
+        }
+        text("state") {
+            load { getCachedProfileData().state }
+            error(0, "Não é um Estado aceito")
+            check { if (isStateValid(text)) null else 0 }
+        }
+        submit {
+            trySave()
         }
     }
 
-    private suspend fun getProfileData(): Profile {
-        return kotlin.runCatching {
+    private val getProfileTaskModel = TaskModel {
+        getProfileData()
+    }
+    private var _cachedProfile: Profile? = null
+    private suspend fun getCachedProfileData(): Profile {
+        _cachedProfile?.let { return it }
+        getProfileTaskModel.launch()
+        return _cachedProfile!!
+    }
+    private suspend fun getProfileData() {
+        _cachedProfile = kotlin.runCatching {
             val response = client.get("${settings.server}/profile")
             Log.d(vTAG, response.bodyAsText(Charsets.UTF_8))
             if (response.status != HttpStatusCode.OK) return@runCatching fallbackProfile
@@ -48,53 +85,31 @@ class ProfileModel: ContextualViewModel() {
     }
 
 
-    private val _saveSuccess = MutableSharedFlow<Unit>(0)
-    val saveSuccess = _saveSuccess.asSharedFlow()
-
-    private val _error = MutableStateFlow("")
-    val error = _error.asStateFlow()
-
-    private val _fetching = MutableStateFlow(false)
-    val fetching = _fetching.asStateFlow()
-
     private fun clearError() {
         _error.value = ""
+        formModel.clearError()
     }
     fun resetToPreviousProfile() {
-        clearError()
-        val p = savedProfile.copy()
-        name.value = p.name
-        email.value = p.email
-        city.value = p.city
-        state.value = p.state
-    }
-    private fun resetToNewProfile(profile: Profile) {
-        savedProfile = profile
-        resetToPreviousProfile()
+        formModel.resetToPrevious()
     }
 
     private fun getCurrentProfile(): Profile {
         return Profile(
-            name.value, email.value, city.value, state.value
+            formModel.getText("name"),
+            formModel.getText("email"),
+            formModel.getText("city"),
+            formModel.getText("state"),
         )
     }
-    private fun isValid(profile: Profile): Boolean {
-        return CitiesByState.isValidCity(profile.city, profile.state)
-    }
+
+    /* Assume que os campos estão válidos */
     fun trySave() {
         clearError()
-        _fetching.value = true
         viewModelScope.launch {
             val profile = getCurrentProfile()
-            if (!isValid(profile)) {
-                _error.value = ERROR.INVALID_FIELD
-                return@launch
-            }
             val succeeded = save(profile)
             if (!succeeded) return@launch
-            resetToNewProfile(profile)
-        }.invokeOnCompletion {
-            _fetching.value = false
+            formModel.saveIfValid()
         }
     }
 

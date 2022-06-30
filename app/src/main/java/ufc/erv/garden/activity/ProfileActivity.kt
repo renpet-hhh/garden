@@ -32,7 +32,6 @@ class ProfileActivity : DrawerBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.initialize(this)
-        viewModel.fetchData()
 
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.profile, super.getRootForInflate(), true)
         binding.viewModel = viewModel
@@ -41,6 +40,9 @@ class ProfileActivity : DrawerBaseActivity() {
         bindAdapter(binding.stateDisplay, R.array.estados)
 
         lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.formModel.refresh()
+            }
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.saveSuccess.collect {
@@ -48,7 +50,7 @@ class ProfileActivity : DrawerBaseActivity() {
                     }
                 }
                 launch {
-                    viewModel.state.collect {
+                    viewModel.formModel.getFlow("state").collect {
                         val citiesArrayId = CitiesByState.getResourceArrayId(it) ?: return@collect
                         bindAdapter(binding.cityDisplay, citiesArrayId)
                     }

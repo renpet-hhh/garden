@@ -3,35 +3,46 @@ package ufc.erv.garden.viewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ufc.erv.garden.model.FormModel
+import ufc.erv.garden.model.TaskModel
 import ufc.erv.garden.singleton.Client
 
 class LoginModel : ContextualViewModel() {
     private val vTAG = "MyPlantsModel" /* Logger TAG */
 
-    private object ERROR {
-        const val SERVER_CONNECT = "Conexão ao servidor falhou"
-        const val DECODE_RESPONSE = "Erro interno do servidor"
-        const val NOT_AUTHORIZED = "Nome de usuário e/ou senha incorreto"
+    private val _authError = MutableStateFlow("")
+    val authError = _authError.asStateFlow()
+    val taskModel = TaskModel {
+        tryAuthenticate()
     }
 
-    private val _error : MutableStateFlow<String> = MutableStateFlow("")
-    val error : StateFlow<String> by this::_error
+    object ERROR {
+        const val SERVER_CONNECTION = "Conexão ao servidor falhou"
+        const val UNAUTHORIZED = "Nome de usuário e/ou senha incorreto"
+        const val EMPTY = "Preencha este campo"
+    }
 
-    /** Indica se está aguardando resposta do servidor */
-    private val _fetching = MutableStateFlow(false)
-    val fetching by this::_fetching
+    val formModel = FormModel(viewModelScope) {
+        text("username") {
+            error(0, ERROR.EMPTY)
+            check { if (text.isEmpty()) 0 else null }
+        }
+        text("password") {
+            error(0, ERROR.EMPTY)
+            check { if (text.isEmpty()) 0 else null }
+        }
+        submit {
+            viewModelScope?.launch {
+                taskModel.launch()
+            }
+        }
+    }
 
     private val _success : MutableSharedFlow<Unit> = MutableSharedFlow(0, 0)
     /** Indicador de sucesso da autenticação. */
     val success : SharedFlow<Unit> by this::_success
-
-    val usernameField : MutableStateFlow<String> = MutableStateFlow("")
-    val passwordField : MutableStateFlow<String> = MutableStateFlow("")
 
     private val _username = "mock"
     private val _password = "123456"
@@ -39,37 +50,33 @@ class LoginModel : ContextualViewModel() {
         const val login = "/login"
     }
 
-    fun tryAuthenticate() {
-        _fetching.value = true
-        viewModelScope.launch {
-            val valid = usernameField.value == _username && passwordField.value == _password
-            if (valid) {
-                _success.emit(Unit)
-                return@launch
-            }
-            Client.login(usernameField.value, passwordField.value)
-            val result = client.runCatching {
-                get(settings.server + PATH.login)
-            }
-            if (result.isFailure) {
-                _error.emit(ERROR.SERVER_CONNECT)
-                return@launch
-            }
-            val response = result.getOrThrow()
-            if (response.status != HttpStatusCode.OK) {
-                _error.emit(ERROR.NOT_AUTHORIZED)
-                return@launch
-            }
-            clearError()
+    private suspend fun tryAuthenticate() {
+        val username = formModel.getText("username")
+        val password = formModel.getText("password")
+        if (username == _username && password == _password) {
             _success.emit(Unit)
-        }.invokeOnCompletion {
-            _fetching.value = false
+            return
         }
+        Client.login(username, password)
+        val result = client.runCatching {
+            get(settings.server + PATH.login)
+        }
+        if (result.isFailure) {
+            _authError.emit(ERROR.SERVER_CONNECTION)
+            return
+        }
+        val response = result.getOrThrow()
+        if (response.status != HttpStatusCode.OK) {
+            _authError.emit(ERROR.UNAUTHORIZED)
+            return
+        }
+        formModel.clearError()
+        _success.emit(Unit)
     }
 
-    fun clearError() {
-        _error.value = ""
+    private fun clearError() {
+        formModel.clearError()
+        _authError.value = ""
     }
-
 
 }

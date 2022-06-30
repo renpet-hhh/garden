@@ -2,22 +2,27 @@ package ufc.erv.garden.model
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 
 class FormModel(val viewModelScope: CoroutineScope? = null, builder: Builder.() -> Unit) {
 
     private val textFields = mutableMapOf<String, FieldModel>()
-    private var submitAction: FormModel.() -> Unit = { }
+    private var submitAction: suspend FormModel.() -> Unit = { }
     private var failedSubmitAction: FormModel.(String) -> Unit = { }
 
     val valid
         get() = textFields.values.all { it.valid }
+    val busy
+        get() = taskModel.busy
+    val busyFlow
+        get() = taskModel.busyFlow
 
     class Builder(private val model: FormModel) {
         fun text(name: String, builder: FieldModel.Builder.() -> Unit) {
             model.textFields[name] = FieldModel(model.viewModelScope, builder)
         }
-        fun submit(action: FormModel.() -> Unit) {
+        fun submit(action: suspend FormModel.() -> Unit) {
             model.submitAction = action
         }
         fun onFailedSubmitTry(action: FormModel.(String) -> Unit) {
@@ -46,11 +51,6 @@ class FormModel(val viewModelScope: CoroutineScope? = null, builder: Builder.() 
     fun warn() {
         textFields.values.forEach{ it.warn() }
     }
-    fun submit() {
-        val reason = findErrorReason()
-        if (reason == null) this.apply(submitAction)
-        else onFailedSubmit(reason)
-    }
     private fun findErrorReason(): String? {
         warn()
         textFields.values.forEach {
@@ -62,10 +62,34 @@ class FormModel(val viewModelScope: CoroutineScope? = null, builder: Builder.() 
         failedSubmitAction.invoke(this, reason)
     }
 
-    fun getText(name: String) = textFields[name]?.text
-    fun getFlow(name: String) = textFields[name]?.textFlow
+    private val taskModel = TaskModel {
+        val reason = findErrorReason()
+        if (reason == null) submitAction.invoke(this)
+        else onFailedSubmit(reason)
+    }
+    fun submit() {
+        val reason = findErrorReason()
+        if (reason != null) {
+            onFailedSubmit(reason)
+            return
+        }
+        viewModelScope?.launch {
+            syncSubmit()
+        }
+    }
+    internal suspend fun syncSubmit() {
+        taskModel.launch()
+    }
 
-    internal fun getMutableFlow(name: String): MutableStateFlow<String>? {
+
+    fun getText(name: String) = textFields[name]!!.text
+    fun getFlow(name: String) = textFields[name]!!.textFlow
+    fun getErrorFlow(name: String) = textFields[name]!!.errorFlow
+
+    fun getMutableFlow(name: String): MutableStateFlow<String>? {
         return textFields[name]?.getMutableFlow()
+    }
+    suspend fun refresh() {
+        textFields.values.forEach { it.refresh() }
     }
 }

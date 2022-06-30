@@ -60,6 +60,6 @@ fun bindImageUri(imgView: ImageView, imgUri: Uri?) {
 }
 
 @BindingAdapter("errorText")
-fun bindError(textInputLayout: TextInputLayout, error: String) {
-    textInputLayout.error = error.ifEmpty { null }
+fun bindError(textInputLayout: TextInputLayout, error: String?) {
+    textInputLayout.error = error?.ifEmpty { null }
 }

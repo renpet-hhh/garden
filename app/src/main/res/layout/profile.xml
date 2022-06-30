@@ -33,7 +33,7 @@
             android:id="@+id/displayUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.name}"
+            android:text='@{viewModel.formModel.getFlow("name")}'
             android:textSize="24sp"
             tools:text="Nome de usuário"
             app:layout_constraintBottom_toTopOf="@+id/displayEmail"
@@ -48,6 +48,7 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="50dp"
+            app:errorText='@{viewModel.formModel.getErrorFlow("email")}'
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/displayUsername">
@@ -56,7 +57,7 @@
                 android:id="@+id/editEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.email}"
+                android:text='@={viewModel.formModel.getMutableFlow("email")}'
                 android:hint="@string/email" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,8 +100,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:text="@string/salvar"
-            android:onClick="@{() -> viewModel.trySave()}"
-            android:enabled="@{!viewModel.fetching}"
+            android:onClick="@{() -> viewModel.formModel.submit()}"
+            android:enabled="@{!viewModel.formModel.busyFlow}"
             app:cornerRadius="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/displayReset"
             app:layout_constraintEnd_toEndOf="@+id/profileCityInput"
@@ -128,6 +129,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="50dp"
             android:hint="@string/estado"
+            app:errorText='@{viewModel.formModel.getErrorFlow("state")}'
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/displayContact">
@@ -138,7 +140,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:inputType="text"
-                android:text="@={viewModel.state}" />
+                android:text='@={viewModel.formModel.getMutableFlow("state")}' />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -151,6 +153,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="50dp"
             android:hint="@string/cidade"
+            app:errorText='@{viewModel.formModel.getErrorFlow("city")}'
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileStateInput">
@@ -161,7 +164,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:inputType="text"
-                android:text="@={viewModel.city}" />
+                android:text='@={viewModel.formModel.getMutableFlow("city")}' />
 
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -1,5 +1,7 @@
 package ufc.erv.garden.model
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.assertEquals
@@ -48,8 +50,8 @@ class FormModelTest {
                 }
             }
             submit {
-                submittedName = getText("name") ?: ""
-                submittedEmail = getText("email") ?: ""
+                submittedName = getText("name")
+                submittedEmail = getText("email")
             }
             onFailedSubmitTry { reason ->
                 failedReason = reason
@@ -139,37 +141,41 @@ class FormModelTest {
         assertEquals(defaultEmail, model.getText("email"))
     }
 
+    @ExperimentalCoroutinesApi
     @Test
-    fun submitIsPerformedOnCurrentValidData() {
+    fun submitIsPerformedOnCurrentValidData() = runTest {
         changeText("name", "olá")
         changeText("email", validEmail)
-        model.submit()
+        model.syncSubmit()
         assertEquals("olá", submittedName)
         assertEquals(validEmail, submittedEmail)
     }
 
+    @ExperimentalCoroutinesApi
     @Test
-    fun submitIsNotPerformedOnCurrentInvalidData() {
+    fun submitIsNotPerformedOnCurrentInvalidData() = runTest {
         changeText("name", "oi")
         changeText("email", validEmail)
-        model.submit()
+        model.syncSubmit()
         assertEquals("", submittedName)
         assertEquals("", submittedEmail)
     }
 
+    @ExperimentalCoroutinesApi
     @Test
-    fun sendsCorrectReasonOnSubmitFail() {
+    fun sendsCorrectReasonOnSubmitFail() = runTest {
         changeText("name", "12345678901")
-        model.submit()
+        model.syncSubmit()
         assertEquals(bigNameError, failedReason)
     }
 
     // a razão esperada é a do primeiro input declarado ("name")
+    @ExperimentalCoroutinesApi
     @Test
-    fun sendsCorrectReasonOnSubmitFailOnMultipleErrors() {
+    fun sendsCorrectReasonOnSubmitFailOnMultipleErrors() = runTest {
         changeText("name", "12345678901")
         changeText("email", invalidEmail)
-        model.submit()
+        model.syncSubmit()
         assertEquals(bigNameError, failedReason)
     }
 

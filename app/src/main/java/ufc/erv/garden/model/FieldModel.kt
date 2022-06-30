@@ -16,6 +16,7 @@ class FieldModel(viewModelScope: CoroutineScope? = null, builder: Builder.() -> 
     internal var onTextChange: (String) -> Unit = { clearError() }
     private val allErrors = mutableMapOf<Int, String>()
 
+    val errorFlow = _errorFlow.asStateFlow()
     val textFlow = _textFlow.asStateFlow()
     val text
         get() = textFlow.value
@@ -53,10 +54,8 @@ class FieldModel(viewModelScope: CoroutineScope? = null, builder: Builder.() -> 
     init {
         Builder(this).apply(builder)
         viewModelScope?.launch {
-            launch {
-                _textFlow.collect {
-                    onTextChange(it)
-                }
+            _textFlow.collect {
+                onTextChange(it)
             }
         }
     }
@@ -96,7 +95,7 @@ class FieldModel(viewModelScope: CoroutineScope? = null, builder: Builder.() -> 
         }
     }
 
-    internal fun getMutableFlow() = _textFlow
+    fun getMutableFlow() = _textFlow
 
 
 }

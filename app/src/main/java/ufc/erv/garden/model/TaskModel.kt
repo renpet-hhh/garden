@@ -11,6 +11,7 @@ class TaskModel(private val task: suspend () -> Unit) {
         get() = busyFlow.value
 
     suspend fun launch() {
+        if (_busy.value) return
         onTaskBegin()
         task.invoke()
         onTaskFinish()
