@@ -1,16 +1,18 @@
 package ufc.erv.garden.model
 
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import ufc.erv.garden.utils.getPrivateProperty
 
 class FieldModelTest {
     private lateinit var model: FieldModel
     private val errorMessage0 = "Nome deve possuir no mínimo 3 caracteres"
     private val errorMessage1 = "Nome não pode conter caractere . ou /"
     private val defaultText = "Padrão"
+    private val loadedText = "Loaded"
 
     @Before
     fun initialize() {
@@ -28,17 +30,17 @@ class FieldModelTest {
                     else -> null
                 }
             }
+            load {
+                delay(1)
+                loadedText
+            }
         }
     }
-    @Suppress("UNCHECKED_CAST")
-    private fun getOnTextChange() =
-        model.getPrivateProperty("onTextChange") as (String) -> Unit
 
-    @Suppress("UNCHECKED_CAST")
     private fun changeText(text: String) {
-        val textFlow = model.getPrivateProperty("_textFlow") as MutableStateFlow<String>
+        val textFlow = model.getMutableFlow()
         textFlow.value = text
-        getOnTextChange()(text) // simula o evento onTextChange
+        model.onTextChange(text) // simula o evento onTextChange
     }
     private fun trySaveText(text: String) {
         changeText(text)
@@ -141,4 +143,12 @@ class FieldModelTest {
         changeText("o")
         assertEquals(null, model.errorMessage)
     }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun loadsData() = runTest {
+        model.refresh()
+        assertEquals(loadedText, model.text)
+    }
+
 }

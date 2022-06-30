@@ -12,7 +12,8 @@ class FieldModel(viewModelScope: CoroutineScope? = null, builder: Builder.() -> 
     private val _errorFlow = MutableStateFlow<String?>(null)
     private var _validate: FieldModel.() -> Int? = { null }
     private var _savedText = ""
-    private var onTextChange: (String) -> Unit = { clearError() }
+    private var loader: (suspend () -> String)? = null
+    internal var onTextChange: (String) -> Unit = { clearError() }
     private val allErrors = mutableMapOf<Int, String>()
 
     val textFlow = _textFlow.asStateFlow()
@@ -44,13 +45,18 @@ class FieldModel(viewModelScope: CoroutineScope? = null, builder: Builder.() -> 
         fun overwriteOnTextChange(listener: (String) -> Unit) {
             model.onTextChange = listener
         }
+        fun load(loader: suspend () -> String) {
+            model.loader = loader
+        }
     }
 
     init {
         Builder(this).apply(builder)
         viewModelScope?.launch {
-            _textFlow.collect {
-                onTextChange(it)
+            launch {
+                _textFlow.collect {
+                    onTextChange(it)
+                }
             }
         }
     }
@@ -84,6 +90,13 @@ class FieldModel(viewModelScope: CoroutineScope? = null, builder: Builder.() -> 
         _textFlow.value = ""
         clearError()
     }
+    suspend fun refresh() {
+        loader?.invoke()?.let {
+            _textFlow.emit(it)
+        }
+    }
+
+    internal fun getMutableFlow() = _textFlow
 
 
 }

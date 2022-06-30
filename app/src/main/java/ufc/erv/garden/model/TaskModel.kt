@@ -15,8 +15,8 @@ class TaskModel(private val task: suspend () -> Unit) {
         task.invoke()
         onTaskFinish()
     }
-    val onTaskBegin = { _busy.value = true }
-    val onTaskFinish = { _busy.value = false }
+    internal val onTaskBegin = { _busy.value = true }
+    internal val onTaskFinish = { _busy.value = false }
 
 
 }
